@@ -1,0 +1,2527 @@
+{
+  "server": [
+    {
+      "version": "18.7 (a21afb5)",
+      "timezone": "GMT"
+    }
+  ],
+  "columns": [
+    {
+      "table_name": "akun",
+      "column_name": "id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "YES",
+      "identity_generation": "ALWAYS",
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "peran",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "kode_akun",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "ALWAYS",
+      "generation_expression": "(\nCASE\n    WHEN (peran = 'nasabah'::text) THEN 'NSB-'::text\n    ELSE 'PGL-'::text\nEND || lpad((id)::text, GREATEST(5, length((id)::text)), '0'::text))"
+    },
+    {
+      "table_name": "akun",
+      "column_name": "nama",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "email",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "nomor_whatsapp",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "password_hash",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "aktif",
+      "data_type": "boolean",
+      "udt_name": "bool",
+      "is_nullable": "NO",
+      "column_default": "true",
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "dibuat_pada",
+      "data_type": "timestamp with time zone",
+      "udt_name": "timestamptz",
+      "is_nullable": "NO",
+      "column_default": "now()",
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "setoran_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "jenis_sampah_id",
+      "data_type": "integer",
+      "udt_name": "int4",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 32,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "berat_kg",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 12,
+      "numeric_scale": 3,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "harga_per_kg",
+      "data_type": "integer",
+      "udt_name": "int4",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 32,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "subtotal_rp",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 22,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "ALWAYS",
+      "generation_expression": "round((berat_kg * (harga_per_kg)::numeric), 0)"
+    },
+    {
+      "table_name": "harga_sampah",
+      "column_name": "jenis_sampah_id",
+      "data_type": "integer",
+      "udt_name": "int4",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 32,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "harga_sampah",
+      "column_name": "berlaku_mulai",
+      "data_type": "date",
+      "udt_name": "date",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "harga_sampah",
+      "column_name": "harga_per_kg",
+      "data_type": "integer",
+      "udt_name": "int4",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 32,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "YES",
+      "identity_generation": "ALWAYS",
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "layanan_kode",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "tanggal",
+      "data_type": "date",
+      "udt_name": "date",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "jam_mulai",
+      "data_type": "time without time zone",
+      "udt_name": "time",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "jam_selesai",
+      "data_type": "time without time zone",
+      "udt_name": "time",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "tersedia",
+      "data_type": "boolean",
+      "udt_name": "bool",
+      "is_nullable": "NO",
+      "column_default": "true",
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "catatan",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "pengelola_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "peran_pengelola",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "ALWAYS",
+      "generation_expression": "'pengelola'::text"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "column_name": "id",
+      "data_type": "integer",
+      "udt_name": "int4",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 32,
+      "numeric_scale": 0,
+      "is_identity": "YES",
+      "identity_generation": "ALWAYS",
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jenis_sampah",
+      "column_name": "nama",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jenis_sampah",
+      "column_name": "kategori",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "jenis_sampah",
+      "column_name": "panduan",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "kode",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "nama",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "lokasi_atau_area",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "hari_rutin",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "syarat",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "YES",
+      "identity_generation": "ALWAYS",
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "nasabah_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "alamat_penjemputan",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "nomor_whatsapp",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "tanggal_diminta",
+      "data_type": "date",
+      "udt_name": "date",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "perkiraan_berat_kg",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 12,
+      "numeric_scale": 3,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "catatan_nasabah",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "status",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": "'menunggu'::text",
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "jadwal_layanan_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "pengelola_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "catatan_pengelola",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "diajukan_pada",
+      "data_type": "timestamp with time zone",
+      "udt_name": "timestamptz",
+      "is_nullable": "NO",
+      "column_default": "now()",
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "diproses_pada",
+      "data_type": "timestamp with time zone",
+      "udt_name": "timestamptz",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "peran_nasabah",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "ALWAYS",
+      "generation_expression": "'nasabah'::text"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "peran_pengelola",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "ALWAYS",
+      "generation_expression": "'pengelola'::text"
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "YES",
+      "identity_generation": "ALWAYS",
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "nasabah_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "pengelola_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "tanggal_setoran",
+      "data_type": "date",
+      "udt_name": "date",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "dicatat_pada",
+      "data_type": "timestamp with time zone",
+      "udt_name": "timestamptz",
+      "is_nullable": "NO",
+      "column_default": "now()",
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "kunci_permintaan",
+      "data_type": "uuid",
+      "udt_name": "uuid",
+      "is_nullable": "NO",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "peran_nasabah",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "ALWAYS",
+      "generation_expression": "'nasabah'::text"
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "peran_pengelola",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "ALWAYS",
+      "generation_expression": "'pengelola'::text"
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "pengajuan_penjemputan_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_harga_terkini",
+      "column_name": "id",
+      "data_type": "integer",
+      "udt_name": "int4",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 32,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_harga_terkini",
+      "column_name": "nama",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_harga_terkini",
+      "column_name": "kategori",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_harga_terkini",
+      "column_name": "panduan",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_harga_terkini",
+      "column_name": "harga_per_kg",
+      "data_type": "integer",
+      "udt_name": "int4",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 32,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_harga_terkini",
+      "column_name": "berlaku_mulai",
+      "data_type": "date",
+      "udt_name": "date",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_ringkasan_pengelola",
+      "column_name": "hari_ini",
+      "data_type": "date",
+      "udt_name": "date",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_ringkasan_pengelola",
+      "column_name": "nilai_hari_ini_rp",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_ringkasan_pengelola",
+      "column_name": "berat_hari_ini_kg",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_ringkasan_pengelola",
+      "column_name": "transaksi_hari_ini",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_ringkasan_pengelola",
+      "column_name": "nasabah_aktif",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_ringkasan_pengelola",
+      "column_name": "hari_tersedia_minggu_ini",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "setoran_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "kode_setoran",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "tanggal_setoran",
+      "data_type": "date",
+      "udt_name": "date",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "dicatat_pada",
+      "data_type": "timestamp with time zone",
+      "udt_name": "timestamptz",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "nasabah_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "kode_nasabah",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "nama_nasabah",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "pengelola_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "nama_pengelola",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "jenis_sampah",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "berat_kg",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "nilai_setoran_rp",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_riwayat_setoran",
+      "column_name": "status",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_saldo_nasabah",
+      "column_name": "nasabah_id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": 64,
+      "numeric_scale": 0,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_saldo_nasabah",
+      "column_name": "kode_nasabah",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_saldo_nasabah",
+      "column_name": "nama",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_saldo_nasabah",
+      "column_name": "saldo_rp",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_saldo_nasabah",
+      "column_name": "total_kg",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "table_name": "v_saldo_nasabah",
+      "column_name": "kg_tahun_ini",
+      "data_type": "numeric",
+      "udt_name": "numeric",
+      "is_nullable": "YES",
+      "column_default": null,
+      "character_maximum_length": null,
+      "numeric_precision": null,
+      "numeric_scale": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    }
+  ],
+  "table_columns": [
+    {
+      "table_name": "akun",
+      "column_name": "id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "a",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "peran",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "kode_akun",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "s",
+      "expression": "(\nCASE\n    WHEN (peran = 'nasabah'::text) THEN 'NSB-'::text\n    ELSE 'PGL-'::text\nEND || lpad((id)::text, GREATEST(5, length((id)::text)), '0'::text))"
+    },
+    {
+      "table_name": "akun",
+      "column_name": "nama",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "email",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "nomor_whatsapp",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "password_hash",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "akun",
+      "column_name": "aktif",
+      "sql_type": "boolean",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": "true"
+    },
+    {
+      "table_name": "akun",
+      "column_name": "dibuat_pada",
+      "sql_type": "timestamp with time zone",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": "now()"
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "setoran_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "jenis_sampah_id",
+      "sql_type": "integer",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "berat_kg",
+      "sql_type": "numeric(12,3)",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "harga_per_kg",
+      "sql_type": "integer",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "detail_setoran",
+      "column_name": "subtotal_rp",
+      "sql_type": "numeric(22,0)",
+      "not_null": false,
+      "identity": "",
+      "generated": "s",
+      "expression": "round((berat_kg * (harga_per_kg)::numeric), 0)"
+    },
+    {
+      "table_name": "harga_sampah",
+      "column_name": "jenis_sampah_id",
+      "sql_type": "integer",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "harga_sampah",
+      "column_name": "berlaku_mulai",
+      "sql_type": "date",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "harga_sampah",
+      "column_name": "harga_per_kg",
+      "sql_type": "integer",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "a",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "layanan_kode",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "tanggal",
+      "sql_type": "date",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "jam_mulai",
+      "sql_type": "time without time zone",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "jam_selesai",
+      "sql_type": "time without time zone",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "tersedia",
+      "sql_type": "boolean",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": "true"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "catatan",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "pengelola_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "column_name": "peran_pengelola",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "s",
+      "expression": "'pengelola'::text"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "column_name": "id",
+      "sql_type": "integer",
+      "not_null": true,
+      "identity": "a",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jenis_sampah",
+      "column_name": "nama",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jenis_sampah",
+      "column_name": "kategori",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "jenis_sampah",
+      "column_name": "panduan",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "kode",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "nama",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "lokasi_atau_area",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "hari_rutin",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "layanan",
+      "column_name": "syarat",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "a",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "nasabah_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "alamat_penjemputan",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "nomor_whatsapp",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "tanggal_diminta",
+      "sql_type": "date",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "perkiraan_berat_kg",
+      "sql_type": "numeric(12,3)",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "catatan_nasabah",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "status",
+      "sql_type": "text",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": "'menunggu'::text"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "jadwal_layanan_id",
+      "sql_type": "bigint",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "pengelola_id",
+      "sql_type": "bigint",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "catatan_pengelola",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "diajukan_pada",
+      "sql_type": "timestamp with time zone",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": "now()"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "diproses_pada",
+      "sql_type": "timestamp with time zone",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "peran_nasabah",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "s",
+      "expression": "'nasabah'::text"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "column_name": "peran_pengelola",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "s",
+      "expression": "'pengelola'::text"
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "a",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "nasabah_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "pengelola_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "tanggal_setoran",
+      "sql_type": "date",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "dicatat_pada",
+      "sql_type": "timestamp with time zone",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": "now()"
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "kunci_permintaan",
+      "sql_type": "uuid",
+      "not_null": true,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "peran_nasabah",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "s",
+      "expression": "'nasabah'::text"
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "peran_pengelola",
+      "sql_type": "text",
+      "not_null": false,
+      "identity": "",
+      "generated": "s",
+      "expression": "'pengelola'::text"
+    },
+    {
+      "table_name": "setoran",
+      "column_name": "pengajuan_penjemputan_id",
+      "sql_type": "bigint",
+      "not_null": false,
+      "identity": "",
+      "generated": "",
+      "expression": null
+    }
+  ],
+  "constraints": [
+    {
+      "table_name": "akun",
+      "name": "akun_aktif_not_null",
+      "definition": "NOT NULL aktif"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_dibuat_pada_not_null",
+      "definition": "NOT NULL dibuat_pada"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_email_check",
+      "definition": "CHECK (((email = btrim(email)) AND (email <> ''::text)))"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_email_not_null",
+      "definition": "NOT NULL email"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_id_peran_key",
+      "definition": "UNIQUE (id, peran)"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_kode_akun_key",
+      "definition": "UNIQUE (kode_akun)"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_nama_check",
+      "definition": "CHECK ((btrim(nama) <> ''::text))"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_nama_not_null",
+      "definition": "NOT NULL nama"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_password_hash_check",
+      "definition": "CHECK ((btrim(password_hash) <> ''::text))"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_password_hash_not_null",
+      "definition": "NOT NULL password_hash"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_peran_check",
+      "definition": "CHECK ((peran = ANY (ARRAY['nasabah'::text, 'pengelola'::text])))"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_peran_not_null",
+      "definition": "NOT NULL peran"
+    },
+    {
+      "table_name": "akun",
+      "name": "akun_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_berat_kg_check",
+      "definition": "CHECK (((berat_kg > (0)::numeric) AND (berat_kg <> 'NaN'::numeric)))"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_berat_kg_not_null",
+      "definition": "NOT NULL berat_kg"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_harga_per_kg_check",
+      "definition": "CHECK ((harga_per_kg > 0))"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_harga_per_kg_not_null",
+      "definition": "NOT NULL harga_per_kg"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_jenis_sampah_id_fkey",
+      "definition": "FOREIGN KEY (jenis_sampah_id) REFERENCES jenis_sampah(id)"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_jenis_sampah_id_not_null",
+      "definition": "NOT NULL jenis_sampah_id"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_pkey",
+      "definition": "PRIMARY KEY (setoran_id, jenis_sampah_id)"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_setoran_id_fkey",
+      "definition": "FOREIGN KEY (setoran_id) REFERENCES setoran(id)"
+    },
+    {
+      "table_name": "detail_setoran",
+      "name": "detail_setoran_setoran_id_not_null",
+      "definition": "NOT NULL setoran_id"
+    },
+    {
+      "table_name": "harga_sampah",
+      "name": "harga_sampah_berlaku_mulai_not_null",
+      "definition": "NOT NULL berlaku_mulai"
+    },
+    {
+      "table_name": "harga_sampah",
+      "name": "harga_sampah_harga_per_kg_check",
+      "definition": "CHECK ((harga_per_kg > 0))"
+    },
+    {
+      "table_name": "harga_sampah",
+      "name": "harga_sampah_harga_per_kg_not_null",
+      "definition": "NOT NULL harga_per_kg"
+    },
+    {
+      "table_name": "harga_sampah",
+      "name": "harga_sampah_jenis_sampah_id_fkey",
+      "definition": "FOREIGN KEY (jenis_sampah_id) REFERENCES jenis_sampah(id)"
+    },
+    {
+      "table_name": "harga_sampah",
+      "name": "harga_sampah_jenis_sampah_id_not_null",
+      "definition": "NOT NULL jenis_sampah_id"
+    },
+    {
+      "table_name": "harga_sampah",
+      "name": "harga_sampah_pkey",
+      "definition": "PRIMARY KEY (jenis_sampah_id, berlaku_mulai)"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_check",
+      "definition": "CHECK ((((jam_mulai IS NOT NULL) AND (jam_selesai IS NOT NULL) AND (jam_selesai > jam_mulai)) OR ((NOT tersedia) AND (jam_mulai IS NULL) AND (jam_selesai IS NULL))))"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_layanan_kode_fkey",
+      "definition": "FOREIGN KEY (layanan_kode) REFERENCES layanan(kode)"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_layanan_kode_not_null",
+      "definition": "NOT NULL layanan_kode"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_pengelola_id_not_null",
+      "definition": "NOT NULL pengelola_id"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_pengelola_id_peran_pengelola_fkey",
+      "definition": "FOREIGN KEY (pengelola_id, peran_pengelola) REFERENCES akun(id, peran)"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_tanggal_not_null",
+      "definition": "NOT NULL tanggal"
+    },
+    {
+      "table_name": "jadwal_layanan",
+      "name": "jadwal_layanan_tersedia_not_null",
+      "definition": "NOT NULL tersedia"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "name": "jenis_sampah_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "name": "jenis_sampah_kategori_check",
+      "definition": "CHECK ((kategori = ANY (ARRAY['Plastik'::text, 'Kertas'::text, 'Logam'::text, 'Kaca'::text, 'Lainnya'::text])))"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "name": "jenis_sampah_kategori_not_null",
+      "definition": "NOT NULL kategori"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "name": "jenis_sampah_nama_key",
+      "definition": "UNIQUE (nama)"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "name": "jenis_sampah_nama_not_null",
+      "definition": "NOT NULL nama"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "name": "jenis_sampah_panduan_not_null",
+      "definition": "NOT NULL panduan"
+    },
+    {
+      "table_name": "jenis_sampah",
+      "name": "jenis_sampah_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "table_name": "layanan",
+      "name": "layanan_kode_check",
+      "definition": "CHECK ((kode = ANY (ARRAY['setoran_umum'::text, 'penimbangan'::text, 'penjemputan'::text])))"
+    },
+    {
+      "table_name": "layanan",
+      "name": "layanan_kode_not_null",
+      "definition": "NOT NULL kode"
+    },
+    {
+      "table_name": "layanan",
+      "name": "layanan_nama_not_null",
+      "definition": "NOT NULL nama"
+    },
+    {
+      "table_name": "layanan",
+      "name": "layanan_pkey",
+      "definition": "PRIMARY KEY (kode)"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_alamat_penjemputan_check",
+      "definition": "CHECK ((btrim(alamat_penjemputan) <> ''::text))"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_alamat_penjemputan_not_null",
+      "definition": "NOT NULL alamat_penjemputan"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_diajukan_pada_not_null",
+      "definition": "NOT NULL diajukan_pada"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_id_nasabah_id_key",
+      "definition": "UNIQUE (id, nasabah_id)"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_jadwal_layanan_id_fkey",
+      "definition": "FOREIGN KEY (jadwal_layanan_id) REFERENCES jadwal_layanan(id)"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_nasabah_id_not_null",
+      "definition": "NOT NULL nasabah_id"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_nasabah_id_peran_nasabah_fkey",
+      "definition": "FOREIGN KEY (nasabah_id, peran_nasabah) REFERENCES akun(id, peran)"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_nomor_whatsapp_check",
+      "definition": "CHECK ((btrim(nomor_whatsapp) <> ''::text))"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_nomor_whatsapp_not_null",
+      "definition": "NOT NULL nomor_whatsapp"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_pengelola_id_peran_pengelola_fkey",
+      "definition": "FOREIGN KEY (pengelola_id, peran_pengelola) REFERENCES akun(id, peran)"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_perkiraan_berat_kg_check",
+      "definition": "CHECK (((perkiraan_berat_kg > (0)::numeric) AND (perkiraan_berat_kg <> 'NaN'::numeric)))"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_status_check",
+      "definition": "CHECK ((status = ANY (ARRAY['menunggu'::text, 'disetujui'::text, 'ditolak'::text, 'selesai'::text])))"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_status_not_null",
+      "definition": "NOT NULL status"
+    },
+    {
+      "table_name": "pengajuan_penjemputan",
+      "name": "pengajuan_penjemputan_tanggal_diminta_not_null",
+      "definition": "NOT NULL tanggal_diminta"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_dicatat_pada_not_null",
+      "definition": "NOT NULL dicatat_pada"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_kunci_permintaan_key",
+      "definition": "UNIQUE (kunci_permintaan)"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_kunci_permintaan_not_null",
+      "definition": "NOT NULL kunci_permintaan"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_nasabah_id_not_null",
+      "definition": "NOT NULL nasabah_id"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_nasabah_id_peran_nasabah_fkey",
+      "definition": "FOREIGN KEY (nasabah_id, peran_nasabah) REFERENCES akun(id, peran)"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_pengajuan_nasabah_fk",
+      "definition": "FOREIGN KEY (pengajuan_penjemputan_id, nasabah_id) REFERENCES pengajuan_penjemputan(id, nasabah_id)"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_pengajuan_unik",
+      "definition": "UNIQUE (pengajuan_penjemputan_id)"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_pengelola_id_not_null",
+      "definition": "NOT NULL pengelola_id"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_pengelola_id_peran_pengelola_fkey",
+      "definition": "FOREIGN KEY (pengelola_id, peran_pengelola) REFERENCES akun(id, peran)"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "table_name": "setoran",
+      "name": "setoran_tanggal_setoran_not_null",
+      "definition": "NOT NULL tanggal_setoran"
+    }
+  ],
+  "indexes": [
+    {
+      "tablename": "akun",
+      "indexname": "akun_id_peran_key",
+      "indexdef": "CREATE UNIQUE INDEX akun_id_peran_key ON public.akun USING btree (id, peran)"
+    },
+    {
+      "tablename": "akun",
+      "indexname": "akun_kode_akun_key",
+      "indexdef": "CREATE UNIQUE INDEX akun_kode_akun_key ON public.akun USING btree (kode_akun)"
+    },
+    {
+      "tablename": "akun",
+      "indexname": "akun_pkey",
+      "indexdef": "CREATE UNIQUE INDEX akun_pkey ON public.akun USING btree (id)"
+    },
+    {
+      "tablename": "detail_setoran",
+      "indexname": "detail_setoran_pkey",
+      "indexdef": "CREATE UNIQUE INDEX detail_setoran_pkey ON public.detail_setoran USING btree (setoran_id, jenis_sampah_id)"
+    },
+    {
+      "tablename": "harga_sampah",
+      "indexname": "harga_sampah_pkey",
+      "indexdef": "CREATE UNIQUE INDEX harga_sampah_pkey ON public.harga_sampah USING btree (jenis_sampah_id, berlaku_mulai)"
+    },
+    {
+      "tablename": "jadwal_layanan",
+      "indexname": "jadwal_layanan_pkey",
+      "indexdef": "CREATE UNIQUE INDEX jadwal_layanan_pkey ON public.jadwal_layanan USING btree (id)"
+    },
+    {
+      "tablename": "jenis_sampah",
+      "indexname": "jenis_sampah_nama_key",
+      "indexdef": "CREATE UNIQUE INDEX jenis_sampah_nama_key ON public.jenis_sampah USING btree (nama)"
+    },
+    {
+      "tablename": "jenis_sampah",
+      "indexname": "jenis_sampah_pkey",
+      "indexdef": "CREATE UNIQUE INDEX jenis_sampah_pkey ON public.jenis_sampah USING btree (id)"
+    },
+    {
+      "tablename": "layanan",
+      "indexname": "layanan_pkey",
+      "indexdef": "CREATE UNIQUE INDEX layanan_pkey ON public.layanan USING btree (kode)"
+    },
+    {
+      "tablename": "setoran",
+      "indexname": "setoran_kunci_permintaan_key",
+      "indexdef": "CREATE UNIQUE INDEX setoran_kunci_permintaan_key ON public.setoran USING btree (kunci_permintaan)"
+    },
+    {
+      "tablename": "setoran",
+      "indexname": "setoran_pkey",
+      "indexdef": "CREATE UNIQUE INDEX setoran_pkey ON public.setoran USING btree (id)"
+    },
+    {
+      "tablename": "akun",
+      "indexname": "akun_email_unik",
+      "indexdef": "CREATE UNIQUE INDEX akun_email_unik ON public.akun USING btree (lower(email))"
+    },
+    {
+      "tablename": "jadwal_layanan",
+      "indexname": "jadwal_tanggal",
+      "indexdef": "CREATE INDEX jadwal_tanggal ON public.jadwal_layanan USING btree (tanggal, layanan_kode)"
+    },
+    {
+      "tablename": "setoran",
+      "indexname": "setoran_nasabah_tanggal",
+      "indexdef": "CREATE INDEX setoran_nasabah_tanggal ON public.setoran USING btree (nasabah_id, tanggal_setoran DESC, id DESC)"
+    },
+    {
+      "tablename": "setoran",
+      "indexname": "setoran_tanggal",
+      "indexdef": "CREATE INDEX setoran_tanggal ON public.setoran USING btree (tanggal_setoran DESC, id DESC)"
+    },
+    {
+      "tablename": "pengajuan_penjemputan",
+      "indexname": "pengajuan_penjemputan_pkey",
+      "indexdef": "CREATE UNIQUE INDEX pengajuan_penjemputan_pkey ON public.pengajuan_penjemputan USING btree (id)"
+    },
+    {
+      "tablename": "pengajuan_penjemputan",
+      "indexname": "pengajuan_penjemputan_id_nasabah_id_key",
+      "indexdef": "CREATE UNIQUE INDEX pengajuan_penjemputan_id_nasabah_id_key ON public.pengajuan_penjemputan USING btree (id, nasabah_id)"
+    },
+    {
+      "tablename": "pengajuan_penjemputan",
+      "indexname": "pengajuan_per_nasabah",
+      "indexdef": "CREATE INDEX pengajuan_per_nasabah ON public.pengajuan_penjemputan USING btree (nasabah_id, diajukan_pada DESC)"
+    },
+    {
+      "tablename": "pengajuan_penjemputan",
+      "indexname": "pengajuan_per_status",
+      "indexdef": "CREATE INDEX pengajuan_per_status ON public.pengajuan_penjemputan USING btree (status, diajukan_pada DESC)"
+    },
+    {
+      "tablename": "setoran",
+      "indexname": "setoran_pengajuan_unik",
+      "indexdef": "CREATE UNIQUE INDEX setoran_pengajuan_unik ON public.setoran USING btree (pengajuan_penjemputan_id)"
+    }
+  ],
+  "enums": [],
+  "functions": [
+    {
+      "proname": "catat_setoran",
+      "definition": "CREATE OR REPLACE FUNCTION public.catat_setoran(p_pengelola_id bigint, p_nasabah_id bigint, p_tanggal date, p_kunci uuid, p_item jsonb)\n RETURNS bigint\n LANGUAGE plpgsql\n SET search_path TO 'public', 'pg_temp'\nAS $function$\nDECLARE\n    v_id bigint;\n    v_jumlah integer;\nBEGIN\n    IF p_tanggal IS NULL OR p_tanggal > (now() AT TIME ZONE 'Asia/Jakarta')::date THEN\n        RAISE EXCEPTION 'Tanggal setoran harus diisi dan tidak boleh di masa depan.';\n    END IF;\n    IF jsonb_typeof(p_item) IS DISTINCT FROM 'array' THEN\n        RAISE EXCEPTION 'Rincian harus berupa daftar hasil penimbangan.';\n    END IF;\n    IF jsonb_array_length(p_item) = 0 THEN\n        RAISE EXCEPTION 'Setoran memerlukan sedikitnya satu jenis sampah.';\n    END IF;\n    IF EXISTS (\n        SELECT 1 FROM jsonb_to_recordset(p_item) AS i(jenis_sampah_id integer, berat_kg numeric)\n        WHERE i.jenis_sampah_id IS NULL OR i.berat_kg IS NULL\n            OR NOT (i.berat_kg > 0 AND i.berat_kg < 1000000000)\n            OR i.berat_kg <> round(i.berat_kg, 3)\n    ) THEN\n        RAISE EXCEPTION 'Periksa jenis sampah dan berat positif (maksimal tiga desimal).';\n    END IF;\n    IF NOT EXISTS (SELECT 1 FROM akun WHERE id = p_pengelola_id AND peran = 'pengelola' AND aktif)\n       OR NOT EXISTS (SELECT 1 FROM akun WHERE id = p_nasabah_id AND peran = 'nasabah' AND aktif) THEN\n        RAISE EXCEPTION 'Pilih akun pengelola dan nasabah yang aktif.';\n    END IF;\n\n    INSERT INTO setoran (nasabah_id, pengelola_id, tanggal_setoran, kunci_permintaan)\n    VALUES (p_nasabah_id, p_pengelola_id, p_tanggal, p_kunci)\n    RETURNING id INTO v_id;\n\n    INSERT INTO detail_setoran (setoran_id, jenis_sampah_id, berat_kg, harga_per_kg)\n    SELECT v_id, i.jenis_sampah_id, i.berat_kg, h.harga_per_kg\n    FROM jsonb_to_recordset(p_item) AS i(jenis_sampah_id integer, berat_kg numeric)\n    JOIN LATERAL (\n        SELECT harga_per_kg FROM harga_sampah\n        WHERE jenis_sampah_id = i.jenis_sampah_id AND berlaku_mulai <= p_tanggal\n        ORDER BY berlaku_mulai DESC LIMIT 1\n    ) AS h ON true;\n\n    GET DIAGNOSTICS v_jumlah = ROW_COUNT;\n    IF v_jumlah <> jsonb_array_length(p_item) THEN\n        RAISE EXCEPTION 'Jenis sampah atau tarif per kg belum tersedia pada tanggal setoran.';\n    END IF;\n    RETURN v_id;\nEND;\n$function$\n"
+    }
+  ],
+  "views": [
+    {
+      "viewname": "v_harga_terkini",
+      "definition": " SELECT j.id,\n    j.nama,\n    j.kategori,\n    j.panduan,\n    h.harga_per_kg,\n    h.berlaku_mulai\n   FROM (jenis_sampah j\n     LEFT JOIN LATERAL ( SELECT harga_sampah.harga_per_kg,\n            harga_sampah.berlaku_mulai\n           FROM harga_sampah\n          WHERE ((harga_sampah.jenis_sampah_id = j.id) AND (harga_sampah.berlaku_mulai <= ((now() AT TIME ZONE 'Asia/Jakarta'::text))::date))\n          ORDER BY harga_sampah.berlaku_mulai DESC\n         LIMIT 1) h ON (true));"
+    },
+    {
+      "viewname": "v_ringkasan_pengelola",
+      "definition": " WITH kalender AS (\n         SELECT ((now() AT TIME ZONE 'Asia/Jakarta'::text))::date AS hari_ini\n        )\n SELECT k.hari_ini,\n    x.nilai_hari_ini_rp,\n    x.berat_hari_ini_kg,\n    x.transaksi_hari_ini,\n    ( SELECT count(*) AS count\n           FROM akun\n          WHERE ((akun.peran = 'nasabah'::text) AND akun.aktif)) AS nasabah_aktif,\n    ( SELECT count(DISTINCT jadwal_layanan.tanggal) AS count\n           FROM jadwal_layanan\n          WHERE (jadwal_layanan.tersedia AND (jadwal_layanan.tanggal >= (date_trunc('week'::text, (k.hari_ini)::timestamp without time zone))::date) AND (jadwal_layanan.tanggal < ((date_trunc('week'::text, (k.hari_ini)::timestamp without time zone))::date + 7)))) AS hari_tersedia_minggu_ini\n   FROM (kalender k\n     CROSS JOIN LATERAL ( SELECT COALESCE(sum(v_riwayat_setoran.nilai_setoran_rp), (0)::numeric) AS nilai_hari_ini_rp,\n            COALESCE(sum(v_riwayat_setoran.berat_kg), (0)::numeric) AS berat_hari_ini_kg,\n            count(*) AS transaksi_hari_ini\n           FROM v_riwayat_setoran\n          WHERE (v_riwayat_setoran.tanggal_setoran = k.hari_ini)) x);"
+    },
+    {
+      "viewname": "v_riwayat_setoran",
+      "definition": " SELECT s.id AS setoran_id,\n    ((('TRX-'::text || to_char((s.tanggal_setoran)::timestamp with time zone, 'DDMMYY'::text)) || '-'::text) || lpad((s.id)::text, GREATEST(3, length((s.id)::text)), '0'::text)) AS kode_setoran,\n    s.tanggal_setoran,\n    s.dicatat_pada,\n    s.nasabah_id,\n    n.kode_akun AS kode_nasabah,\n    n.nama AS nama_nasabah,\n    s.pengelola_id,\n    p.nama AS nama_pengelola,\n    string_agg(j.nama, ', '::text ORDER BY j.nama) AS jenis_sampah,\n    sum(d.berat_kg) AS berat_kg,\n    sum(d.subtotal_rp) AS nilai_setoran_rp,\n    'Terverifikasi'::text AS status\n   FROM ((((setoran s\n     JOIN akun n ON ((n.id = s.nasabah_id)))\n     JOIN akun p ON ((p.id = s.pengelola_id)))\n     JOIN detail_setoran d ON ((d.setoran_id = s.id)))\n     JOIN jenis_sampah j ON ((j.id = d.jenis_sampah_id)))\n  GROUP BY s.id, n.id, p.id;"
+    },
+    {
+      "viewname": "v_saldo_nasabah",
+      "definition": " SELECT n.id AS nasabah_id,\n    n.kode_akun AS kode_nasabah,\n    n.nama,\n    COALESCE(sum(r.nilai_setoran_rp), (0)::numeric) AS saldo_rp,\n    COALESCE(sum(r.berat_kg), (0)::numeric) AS total_kg,\n    COALESCE(sum(r.berat_kg) FILTER (WHERE (EXTRACT(year FROM r.tanggal_setoran) = EXTRACT(year FROM (now() AT TIME ZONE 'Asia/Jakarta'::text)))), (0)::numeric) AS kg_tahun_ini\n   FROM (akun n\n     LEFT JOIN v_riwayat_setoran r ON ((r.nasabah_id = n.id)))\n  WHERE (n.peran = 'nasabah'::text)\n  GROUP BY n.id;"
+    }
+  ],
+  "triggers": [],
+  "jenis_sampah": [
+    {
+      "id": 1,
+      "nama": "Botol Plastik PET",
+      "kategori": "Plastik",
+      "panduan": "Bersih, kering, tanpa tutup."
+    },
+    {
+      "id": 2,
+      "nama": "Gelas Plastik",
+      "kategori": "Plastik",
+      "panduan": "Pisahkan label dan sedotan."
+    },
+    {
+      "id": 3,
+      "nama": "Kardus",
+      "kategori": "Kertas",
+      "panduan": "Lipat dan ikat dalam kondisi kering."
+    },
+    {
+      "id": 4,
+      "nama": "Koran/HVS",
+      "kategori": "Kertas",
+      "panduan": "Pastikan tidak basah atau berminyak."
+    },
+    {
+      "id": 5,
+      "nama": "Kaleng Aluminium",
+      "kategori": "Logam",
+      "panduan": "Kosongkan, bilas, dan pipihkan."
+    },
+    {
+      "id": 6,
+      "nama": "Besi Campur",
+      "kategori": "Logam",
+      "panduan": "Pisahkan dari material berbahaya."
+    },
+    {
+      "id": 7,
+      "nama": "Botol Kaca",
+      "kategori": "Kaca",
+      "panduan": "Setorkan utuh, bersih, tanpa tutup."
+    },
+    {
+      "id": 8,
+      "nama": "Minyak Jelantah",
+      "kategori": "Lainnya",
+      "panduan": "Simpan dalam botol tertutup."
+    }
+  ],
+  "layanan": [
+    {
+      "kode": "penimbangan",
+      "nama": "Penimbangan",
+      "lokasi_atau_area": null,
+      "hari_rutin": null,
+      "syarat": null
+    },
+    {
+      "kode": "penjemputan",
+      "nama": "Penjemputan",
+      "lokasi_atau_area": "Area A",
+      "hari_rutin": "Jumat",
+      "syarat": "Minimal setoran 10 kg"
+    },
+    {
+      "kode": "setoran_umum",
+      "nama": "Setoran umum",
+      "lokasi_atau_area": "Jl. Melati No. 18, Mojoroto",
+      "hari_rutin": null,
+      "syarat": null
+    }
+  ],
+  "harga_sampah": [
+    {
+      "jenis_sampah_id": 1,
+      "berlaku_mulai": "2026-06-22",
+      "harga_per_kg": 4200
+    },
+    {
+      "jenis_sampah_id": 2,
+      "berlaku_mulai": "2026-06-22",
+      "harga_per_kg": 3200
+    },
+    {
+      "jenis_sampah_id": 3,
+      "berlaku_mulai": "2026-06-22",
+      "harga_per_kg": 2800
+    },
+    {
+      "jenis_sampah_id": 4,
+      "berlaku_mulai": "2026-06-22",
+      "harga_per_kg": 3000
+    },
+    {
+      "jenis_sampah_id": 5,
+      "berlaku_mulai": "2026-06-22",
+      "harga_per_kg": 10500
+    },
+    {
+      "jenis_sampah_id": 6,
+      "berlaku_mulai": "2026-06-22",
+      "harga_per_kg": 4500
+    },
+    {
+      "jenis_sampah_id": 7,
+      "berlaku_mulai": "2026-06-22",
+      "harga_per_kg": 1200
+    }
+  ],
+  "counts": [
+    {
+      "akun": "0",
+      "setoran": "0",
+      "pengajuan": "0",
+      "jadwal": "0",
+      "harga": "7"
+    }
+  ]
+}
