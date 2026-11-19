@@ -1,0 +1,45 @@
+$kind: http-request
+description: |-
+  Hasil yang diharapkan: HTTP 200. Kenaikan tepat satu kali nilai transaksi langsung; retry dan input salah tidak menambah saldo.
+
+  Autentikasi: token_nasabah. Prasyarat variabel: token_nasabah, saldo_awal, berat_awal, nilai_setoran, berat_setoran.
+url: "{{base_url}}/saldo"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_nasabah}}"
+scripts:
+  - type: beforeRequest
+    code: |-
+      const required = ["token_nasabah","saldo_awal","berat_awal","nilai_setoran","berat_setoran"];
+      for (const key of required) {
+        const value = pm.environment.get(key);
+        if (value === undefined || value === null || value === '' || String(value).startsWith('<')) {
+          pm.execution.skipRequest(); throw new Error('Isi variabel lokal atau jalankan request sebelumnya: ' + key);
+        }
+        if (key.endsWith('_password') && (String(value).length < 10 || String(value).length > 128)) {
+          pm.execution.skipRequest(); throw new Error('Password harus 10–128 karakter; periksa ' + key);
+        }
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 200', () => pm.response.to.have.status(200));
+      if (pm.response.code === 200) {
+        pm.test('Respons berupa JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));
+        const json = pm.response.json();
+        const data = json.data;
+      function gram(value) { const [a, b = ''] = String(value).split('.'); return BigInt(a) * 1000n + BigInt(b.padEnd(3, '0')); }
+      pm.test('Saldo = saldo awal + transaksi unik yang berhasil', () => {
+        pm.expect(data.nasabah_id).to.eql(pm.environment.get('nasabah_id'));
+        const expected = BigInt(pm.environment.get('saldo_awal')) + BigInt(pm.environment.get('nilai_setoran'));
+        const weight = gram(pm.environment.get('berat_awal')) + gram(pm.environment.get('berat_setoran'));
+        pm.expect(data.saldo_rp).to.eql(expected.toString()); pm.expect(gram(data.total_kg).toString()).to.eql(weight.toString());
+        pm.expect(json.meta.periode_saldo).to.eql('sepanjang_waktu');
+      });
+      }
+    language: text/javascript
+order: 6000

@@ -2,6 +2,8 @@
 
 API untuk pengelola dan nasabah. Penjelasan 24 endpoint, parameter, contoh JSON, hak akses, dan menu frontend tersedia di [docs/API.md](docs/API.md).
 
+Untuk mencoba API satu per satu melalui Postman, gunakan [panduan Postman](docs/POSTMAN.md) dan dua file impor di folder `postman`. Collection menambahkan data uji ke database yang dipakai backend; panduan menjelaskan pemilihan database tujuan, akun pengelola, variabel lokal, dan hasil setiap tahap.
+
 ## Kondisi awal yang diperiksa
 
 Pemeriksaan dilakukan 18 November 2026. Repository awal hanya mempunyai `backend/index.js` dengan `GET /api/health`. Tidak ditemukan `AGENTS.md`. Frontend masih template React/Vite, tanpa formulir Bank Sampah atau hasil ekspor Figma Make. Implementasi API mengikuti kebutuhan dalam tugas; integrasi halaman React belum dilakukan.

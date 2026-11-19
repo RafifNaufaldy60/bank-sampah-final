@@ -1,0 +1,38 @@
+$kind: http-request
+description: |-
+  Hasil yang diharapkan: HTTP 200. Pengajuan uji terlihat dalam daftar terbaru; semua baris berstatus menunggu.
+
+  Autentikasi: token_pengelola. Prasyarat variabel: token_pengelola, pengajuan_id.
+url: "{{base_url}}/pengajuan-penjemputan?status=menunggu&limit=100"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_pengelola}}"
+scripts:
+  - type: beforeRequest
+    code: |-
+      const required = ["token_pengelola","pengajuan_id"];
+      for (const key of required) {
+        const value = pm.environment.get(key);
+        if (value === undefined || value === null || value === '' || String(value).startsWith('<')) {
+          pm.execution.skipRequest(); throw new Error('Isi variabel lokal atau jalankan request sebelumnya: ' + key);
+        }
+        if (key.endsWith('_password') && (String(value).length < 10 || String(value).length > 128)) {
+          pm.execution.skipRequest(); throw new Error('Password harus 10–128 karakter; periksa ' + key);
+        }
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 200', () => pm.response.to.have.status(200));
+      if (pm.response.code === 200) {
+        pm.test('Respons berupa JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));
+        const json = pm.response.json();
+        const data = json.data;
+      pm.test('Daftar pengajuan sesuai filter', () => { pm.expect(data.some(row => row.id === pm.environment.get('pengajuan_id'))).to.eql(true); for (const row of data) pm.expect(row.status).to.eql('menunggu'); });
+      }
+    language: text/javascript
+order: 2000

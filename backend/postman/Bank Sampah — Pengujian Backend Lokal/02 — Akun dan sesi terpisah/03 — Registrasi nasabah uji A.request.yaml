@@ -1,0 +1,72 @@
+$kind: http-request
+description: |-
+  Hasil yang diharapkan: HTTP 201. Akun aktif berperan nasabah; simpan nasabah_id dan kode_nasabah.
+
+  Autentikasi: No Auth (tanpa login). Prasyarat variabel: nasabah_nama, nasabah_email, nasabah_password.
+
+  Body dibuat oleh Pre-request Script melalui variabel lokal request_body agar password berkarakter khusus tetap JSON valid dan retry tidak berubah. Bentuk input:
+  ```json
+  {
+    "nama": "{{nasabah_nama}}",
+    "email": "{{nasabah_email}}",
+    "password": "{{nasabah_password}}",
+    "nomor_whatsapp": "081234567890"
+  }
+  ```
+url: "{{base_url}}/auth/register"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{{request_body}}"
+auth:
+  type: noauth
+scripts:
+  - type: beforeRequest
+    code: |-
+      const required = ["nasabah_nama","nasabah_email","nasabah_password"];
+      for (const key of required) {
+        const value = pm.environment.get(key);
+        if (value === undefined || value === null || value === '' || String(value).startsWith('<')) {
+          pm.execution.skipRequest(); throw new Error('Isi variabel lokal atau jalankan request sebelumnya: ' + key);
+        }
+        if (key.endsWith('_password') && (String(value).length < 10 || String(value).length > 128)) {
+          pm.execution.skipRequest(); throw new Error('Password harus 10–128 karakter; periksa ' + key);
+        }
+      }
+      // Substitusi melalui JSON.stringify juga aman untuk password yang berisi tanda kutip/backslash.
+      function resolve(value) {
+        if (typeof value === 'string') return pm.variables.replaceIn(value);
+        if (Array.isArray(value)) return value.map(resolve);
+        if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolve(v)]));
+        return value;
+      }
+      const template = {
+        "nama": "{{nasabah_nama}}",
+        "email": "{{nasabah_email}}",
+        "password": "{{nasabah_password}}",
+        "nomor_whatsapp": "081234567890"
+      };
+      let requestBody = JSON.stringify(resolve(template), null, 2);
+      pm.variables.set('request_body', requestBody);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 201', () => pm.response.to.have.status(201));
+      if (pm.response.code === 201) {
+        pm.test('Respons berupa JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));
+        const json = pm.response.json();
+        const data = json.data;
+      pm.test('Identitas nasabah A benar dan password tidak bocor', () => {
+        pm.expect(data.peran).to.eql('nasabah'); pm.expect(data.aktif).to.eql(true);
+        pm.expect(data.email).to.eql(pm.environment.get('nasabah_email'));
+        pm.expect(data.nama).to.eql(pm.environment.get('nasabah_nama'));
+        pm.expect(data.id).to.match(/^[1-9][0-9]*$/); pm.expect(data).not.to.have.property('password_hash');
+        pm.environment.set('nasabah_id', data.id);
+        pm.environment.set('kode_nasabah', data.kode_akun);
+      });
+      }
+    language: text/javascript
+order: 1000
