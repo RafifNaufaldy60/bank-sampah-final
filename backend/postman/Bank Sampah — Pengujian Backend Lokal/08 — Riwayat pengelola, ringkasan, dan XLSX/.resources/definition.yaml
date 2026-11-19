@@ -1,0 +1,3 @@
+$kind: collection
+description: Filter menggunakan kode nasabah A yang unik, agar hasil uji tidak tercampur nasabah lain.
+order: 8000

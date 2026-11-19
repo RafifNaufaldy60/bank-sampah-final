@@ -1,0 +1,36 @@
+$kind: http-request
+description: |-
+  Hasil yang diharapkan: HTTP 200. Semua baris hasil filter berstatus tutup; baris uji tampil jika berada pada halaman ini. Total dapat memuat jadwal lain.
+
+  Autentikasi: No Auth (tanpa login). Prasyarat variabel: tanggal_uji, jadwal_setoran_id.
+url: "{{base_url}}/jadwal?dari={{tanggal_uji}}&sampai={{tanggal_uji}}&layanan_kode=setoran_umum&status=tutup&limit=100"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: noauth
+scripts:
+  - type: beforeRequest
+    code: |-
+      const required = ["tanggal_uji","jadwal_setoran_id"];
+      for (const key of required) {
+        const value = pm.environment.get(key);
+        if (value === undefined || value === null || value === '' || String(value).startsWith('<')) {
+          pm.execution.skipRequest(); throw new Error('Isi variabel lokal atau jalankan request sebelumnya: ' + key);
+        }
+        if (key.endsWith('_password') && (String(value).length < 10 || String(value).length > 128)) {
+          pm.execution.skipRequest(); throw new Error('Password harus 10–128 karakter; periksa ' + key);
+        }
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 200', () => pm.response.to.have.status(200));
+      if (pm.response.code === 200) {
+        pm.test('Respons berupa JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));
+        const json = pm.response.json();
+        const data = json.data;
+      pm.test('Jadwal tutup tetap muncul dalam daftar publik', () => { pm.expect(json.meta.total > 0).to.eql(true); for (const row of data) pm.expect(row.status).to.eql('tutup'); const own = data.find(row => row.id === pm.environment.get('jadwal_setoran_id')); if (json.meta.total <= 100) pm.expect(Boolean(own)).to.eql(true); if (own) pm.expect(own.tersedia).to.eql(false); });
+      }
+    language: text/javascript
+order: 3000

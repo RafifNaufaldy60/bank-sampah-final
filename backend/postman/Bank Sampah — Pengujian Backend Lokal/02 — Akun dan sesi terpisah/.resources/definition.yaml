@@ -1,0 +1,3 @@
+$kind: collection
+description: A nasabah utama; B nasabah lain; akun pengelola telah dibuat melalui CLI lokal.
+order: 2000
