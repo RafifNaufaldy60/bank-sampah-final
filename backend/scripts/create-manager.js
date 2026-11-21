@@ -22,7 +22,7 @@ if (!process.stdin.isTTY) {
     muted = false;
     process.stdout.write('\n');
     const account = await createManager(db, { nama, email, nomor_whatsapp, password });
-    console.log(`Akun pengelola berhasil dibuat. ID: ${account.id}`);
+    console.log(`Pengajuan pengelola dibuat (pending). Menunggu persetujuan ketua. ID: ${account.id}`);
   } catch (error) {
     muted = false;
     console.error(error.code === 'VALIDASI_GAGAL' ? error.message : 'Akun tidak dibuat. Periksa koneksi, migrasi, dan pastikan email belum digunakan.');

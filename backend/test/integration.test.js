@@ -6,6 +6,7 @@ import ExcelJS from 'exceljs';
 import { isolatedDatabase } from './helpers/isolated-db.js';
 import { createApp } from '../src/app.js';
 import { createManager } from '../src/services/account-service.js';
+import { bootstrapChairs } from '../src/services/chair-bootstrap.js';
 import { migrate } from '../src/migrate.js';
 import { todayJakarta, shiftDays, dateRange } from '../src/utils/dates.js';
 import { digest } from '../src/utils/security.js';
@@ -68,8 +69,8 @@ test('Alur HTTP dan transaksi PostgreSQL pada schema terisolasi', { timeout: 600
     assert.equal(old.nilai_setoran_rp, '4200');
     assert.equal(old.payload_hash, null);
   });
-  await t.test('Registrasi hanya nasabah; pengelola disiapkan melalui fungsi CLI', async () => {
-    await api('/auth/register', { method: 'POST', body: { ...customerInput('a'), peran: 'pengelola' }, expected: 400 });
+  await t.test('Registrasi nasabah dan pengelola melalui persetujuan ketua', async () => {
+    await api('/auth/register', { method: 'POST', body: { ...customerInput('a'), peran: 'ketua' }, expected: 400 });
     a = (await api('/auth/register', { method: 'POST', body: customerInput('a'), expected: 201 })).data;
     b = (await api('/auth/register', { method: 'POST', body: customerInput('b'), expected: 201 })).data;
     assert.equal(a.peran, 'nasabah');
@@ -78,6 +79,11 @@ test('Alur HTTP dan transaksi PostgreSQL pada schema terisolasi', { timeout: 600
     await api('/auth/register', { method: 'POST', body: { ...customerInput('a'), email: 'NASABAH-A@EXAMPLE.TEST' }, expected: 409 });
     manager = await createManager(db, { nama: 'Pengelola Uji 1', email: 'pengelola1@example.test', password });
     manager2 = await createManager(db, { nama: 'Pengelola Uji 2', email: 'pengelola2@example.test', password });
+    const chairs = await bootstrapChairs(db, [1,2].map(n => ({ mode: 'create', nama: `Ketua ${n}`, email: `ketua${n}@example.test`, password })));
+    const chairToken = (await api('/auth/login', { method: 'POST', body: { email: chairs[0].email, password } })).data.token;
+    for (const target of [manager, manager2]) {
+      await api(`/pengajuan-pengelola/${target.id}/setujui`, { method: 'POST', token: chairToken, body: {} });
+    }
     await assert.rejects(createManager(db, { nama: 'Tidak boleh promosi otomatis', email: a.email, password }), error => error.code === '23505');
     assert.equal((await db.query('SELECT peran FROM akun WHERE id=$1', [a.id])).rows[0].peran, 'nasabah');
     assert.match((await db.query('SELECT password_hash FROM akun WHERE id=$1', [a.id])).rows[0].password_hash, /^scrypt\$/);

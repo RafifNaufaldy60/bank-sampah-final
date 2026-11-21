@@ -1,8 +1,10 @@
 # Backend Bank Sampah Digital
 
-API untuk pengelola dan nasabah. Penjelasan 24 endpoint, parameter, contoh JSON, hak akses, dan menu frontend tersedia di [docs/API.md](docs/API.md).
+API untuk pengelola dan nasabah. Kontrak endpoint, parameter, contoh JSON, hak akses, dan menu frontend tersedia di [docs/API.md](docs/API.md).
 
-Untuk mencoba API satu per satu melalui Postman, gunakan [panduan Postman](docs/POSTMAN.md) dan dua file impor di folder `postman`. Collection menambahkan data uji ke database yang dipakai backend; panduan menjelaskan pemilihan database tujuan, akun pengelola, variabel lokal, dan hasil setiap tahap.
+Untuk mencoba API satu per satu melalui Postman, gunakan [panduan Postman](docs/POSTMAN.md) dan artefak v3 YAML di folder `postman`. Collection menambahkan data uji ke database yang dipakai backend; panduan menjelaskan pemilihan database tujuan, akun pengelola, variabel lokal, dan hasil setiap tahap.
+
+Pembaruan persetujuan pengelola 21 November 2026: lihat [migration, bootstrap dua ketua, dan kontrak persetujuan](docs/PERSETUJUAN-PENGELOLA.md). Schema Neon aktual diperiksa read-only; migration 002 belum dijalankan pada Neon.
 
 ## Kondisi awal yang diperiksa
 
@@ -46,11 +48,11 @@ Gunakan `.env` yang sudah ada. Untuk lingkungan baru, salin `.env.example` menja
 
 ```powershell
 npm run db:migrate
-npm run create:pengelola
+npm run bootstrap:ketua
 npm run dev
 ```
 
-`create:pengelola` dijalankan operator yang mempunyai akses terminal dan database. Program meminta nama, email, WhatsApp opsional, dan kata sandi tersembunyi. Tidak ada password bawaan, endpoint pendaftaran pengelola, atau promosi akun existing. Email yang sudah digunakan akan ditolak. Kata sandi minimal 10 dan maksimal 128 karakter. Nasabah mendaftar melalui API.
+`bootstrap:ketua` memerlukan konfigurasi dua akun pilihan pemilik; ikuti [panduan bootstrap](docs/PERSETUJUAN-PENGELOLA.md). `create:pengelola` meminta input interaktif tersembunyi dan kini menghasilkan pengajuan pending, bukan akun aktif. Pendaftaran publik mendukung peran nasabah/pengelola; pengelola perlu persetujuan ketua.
 
 `npm start` menjalankan server tanpa mode watch. Alamat default: `http://localhost:3000/api`. Cek `GET /api/health`. Migrasi dilakukan lewat perintah terpisah, bukan otomatis setiap server mulai.
 
@@ -60,7 +62,7 @@ npm run dev
 | `PORT` | Port backend, default 3000 |
 | `CLIENT_ORIGIN` | Origin frontend, default `http://localhost:5173`; beberapa origin dipisahkan koma |
 | `SESSION_HOURS` | Umur sesi, default 24 jam; bilangan bulat 1–720 |
-| `TEST_DATABASE_URL` | Opsional, database terpisah untuk pengujian integrasi |
+| `TEST_DATABASE_URL` | Wajib untuk tes DB; harus database terpisah, tidak ada fallback produksi |
 
 URL database tidak dicetak. Untuk URL SSL dengan `require`, `prefer`, atau `verify-ca`, koneksi Node menormalkannya menjadi `verify-full`, mempertahankan verifikasi sertifikat/hostname; isi `.env` tidak diubah. Jangan menonaktifkan verifikasi TLS. CORS mengizinkan header Bearer dan `Idempotency-Key`; cookie tidak digunakan.
 
@@ -89,7 +91,7 @@ Urutan sederhana: **route → middleware → controller → database**. Pencatat
 
 ## Aturan bisnis dan integrasi
 
-- Registrasi umum selalu nasabah aktif. Login mengembalikan `id`, `nama`, dan `peran`; React menentukan navigasi tujuan. API tidak mengirim redirect HTML.
+- Registrasi nasabah menghasilkan active; pengelola menghasilkan pending tanpa sesi sampai disetujui ketua. Ketua tetap peran pengelola dengan is_ketua=true. Login/profil menyertakan peran, is_ketua, status_akun. Lihat [kontrak persetujuan](docs/PERSETUJUAN-PENGELOLA.md).
 - Kata sandi memakai `crypto.scrypt` asynchronous, salt acak, dan pemeriksaan waktu konstan. Token sesi acak 32 byte dikirim sekali saat login; database hanya menyimpan SHA-256 token. Logout menghapus sesi tersebut; sesi login lain tetap berlaku. Akun nonaktif ditolak pada setiap permintaan.
 - Saldo adalah seluruh nilai setoran terverifikasi. Belum ada penarikan, biaya, pembatalan transaksi, atau saldo awal manual. Berat utama sepanjang waktu; `kg_tahun_ini` tersedia terpisah. Filter riwayat tidak mengubah saldo.
 - Semua tanggal operasional dan filter memakai Asia/Jakarta. DATE dikirim `YYYY-MM-DD`, jam `HH:mm:ss` WIB, timestamp audit berbentuk ISO 8601 UTC. Minggu Senin–Minggu. Angka uang/berat NUMERIC dan ID BIGINT dikirim sebagai string untuk menjaga presisi.
@@ -116,10 +118,11 @@ npm run check
 npm test
 npm run test:integration
 npm run test:regression
-npm run db:verify
+npm run test:approval
+npm run test:postman
 ```
 
-`npm test` menguji validasi, zona waktu/periode, hash kata sandi, dan pembatas login tanpa koneksi database. Pengujian integrasi menggunakan PostgreSQL sungguhan melalui `TEST_DATABASE_URL` bila diisi, atau koneksi `DATABASE_URL` yang sudah ada.
+`npm test` menguji validasi, zona waktu/periode, hash kata sandi, dan pembatas login tanpa koneksi database. Pengujian integrasi menggunakan PostgreSQL sungguhan melalui `TEST_DATABASE_URL` yang wajib diisi dan terpisah dari `DATABASE_URL`. Tidak ada fallback ke database produksi.
 
 Runner integrasi selalu membuat schema baru `bs_test_<waktu>_<acak>`, membuat sequence/tabel/fungsi/view terpisah dari metadata inspeksi awal, dan memasukkan data fiktif. Search path test tidak memiliki fallback ke `public`; fungsi `catat_setoran` versi fixture diarahkan ke schema uji. Foreign key lintas schema diperiksa. Schema uji dihapus pada teardown, termasuk ketika assertion gagal. Tidak ada `TRUNCATE` atau DELETE terhadap data produksi. Jika proses dipaksa mati oleh OS, schema uji dapat tertinggal; jangan menghapus schema selain nama uji yang telah diverifikasi.
 

@@ -37,10 +37,15 @@ Tanggal: `YYYY-MM-DD`, jam WIB `HH:mm` saat input (output `HH:mm:ss`), waktu aud
 | Metode | Endpoint | Akses | Parameter utama | Menu/pemakai |
 | --- | --- | --- | --- | --- |
 | GET | `/health` | Publik | — | Pemeriksaan backend |
-| POST | `/auth/register` | Publik | nama, email, password, nomor_whatsapp? | Registrasi |
+| POST | `/auth/register` | Publik | nama, email, password, nomor_whatsapp?, peran? | Registrasi |
 | POST | `/auth/login` | Publik | email, password | Login dan pemilihan halaman berdasarkan peran |
 | POST | `/auth/logout` | Login | Bearer | Tombol logout |
 | GET | `/auth/me` | Login | Bearer | Identitas/header, pemulihan sesi |
+| PATCH | `/auth/me` | Login aktif | nama?, nomor_whatsapp? | Update profil tanpa perubahan hak akses |
+| GET | `/pengajuan-pengelola` | Ketua aktif | status?, page?, limit? | Daftar pendaftaran pengelola |
+| GET | `/pengajuan-pengelola/:id` | Ketua aktif | id | Detail pendaftaran |
+| POST | `/pengajuan-pengelola/:id/setujui` | Ketua aktif | Body kosong | Persetujuan sekali |
+| POST | `/pengajuan-pengelola/:id/tolak` | Ketua aktif | alasan_penolakan | Penolakan sekali |
 | GET | `/jenis-sampah` | Publik | tanggal?, search?, kategori?, jenis_sampah_id? | Info Setoran; Catatan Setoran |
 | GET | `/jenis-sampah/:id/harga` | Publik | id; tanggal? | Tarif ketika tanggal/jenis penimbangan berubah |
 | POST | `/harga-sampah` | Pengelola | jenis_sampah_id, berlaku_mulai, harga_per_kg | Persiapan tarif, termasuk Minyak Jelantah |
@@ -73,7 +78,7 @@ Beranda dan tombol navigasinya tetap konten React. Tidak perlu endpoint untuk me
 
 Health melakukan `SELECT 1`; endpoint ini memeriksa koneksi, bukan menggantikan `npm run db:migrate`.
 
-`POST /auth/register` → 201. Nama 1–100 karakter, email valid maksimal 254, password 10–128 karakter. WhatsApp opsional berupa 8–15 digit, boleh diawali `+`. Email disimpan huruf kecil. Menyertakan `peran`, `aktif`, atau `id` menghasilkan 400.
+`POST /auth/register` → 201. Nama 1–100 karakter, email valid maksimal 254, password 10–128 karakter. WhatsApp opsional berupa 8–15 digit, boleh diawali `+`. Email disimpan huruf kecil. `peran` opsional, hanya nasabah (default) atau pengelola. Nasabah active; pengelola pending. Menyertakan `is_ketua`, `status_akun`, `aktif`, atau `id` menghasilkan 400.
 
 ```json
 {
@@ -89,7 +94,7 @@ Health melakukan `SELECT 1`; endpoint ini memeriksa koneksi, bukan menggantikan 
   "data": {
     "id": "2", "kode_akun": "NSB-00002", "nama": "Nasabah Contoh",
     "email": "nasabah@example.test", "nomor_whatsapp": "081234567890",
-    "peran": "nasabah", "aktif": true
+    "peran": "nasabah", "aktif": true, "is_ketua": false, "status_akun": "active"
   }
 }
 ```
@@ -106,7 +111,7 @@ Registrasi tidak otomatis login. `POST /auth/login` menggunakan email dan passwo
     "akun": {
       "id": "2", "kode_akun": "NSB-00002", "nama": "Nasabah Contoh",
       "email": "nasabah@example.test", "nomor_whatsapp": "081234567890",
-      "peran": "nasabah", "aktif": true
+      "peran": "nasabah", "aktif": true, "is_ketua": false, "status_akun": "active"
     },
     "token": "TOKEN_CONTOH_BUKAN_TOKEN_ASLI",
     "token_type": "Bearer",
@@ -124,6 +129,10 @@ Token sungguhan berupa 43 karakter base64url. Gunakan `data.akun.peran` untuk me
 ```
 
 Token tersebut langsung tidak berlaku (permintaan selanjutnya 401); logout kedua memakai token yang telah dicabut juga 401. Login lain pada akun yang sama tidak ikut dicabut. Token kedaluwarsa/nonaktif tidak bisa mengakses endpoint privat.
+
+## Persetujuan akun pengelola
+
+Lihat [kontrak lengkap, contoh request/response, migration dan bootstrap](PERSETUJUAN-PENGELOLA.md). Login memeriksa password dahulu: kredensial salah 401 LOGIN_GAGAL, password benar untuk pending 403 ACCOUNT_PENDING dan ditolak 403 ACCOUNT_REJECTED. Middleware membaca status/peran/is_ketua terbaru dari DB. Semua API privat mensyaratkan aktif=true dan status_akun=active. Ketua tetap peran pengelola, bukan role ketiga.
 
 ## Katalog, tarif, dan informasi layanan
 

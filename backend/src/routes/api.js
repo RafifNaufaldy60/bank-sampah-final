@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { authenticate, role, authRateLimit } from '../middleware/auth.js';
+import { authenticate, role, chair, authRateLimit } from '../middleware/auth.js';
+import { approvalController } from '../controllers/approval-controller.js';
 import { ownershipScope } from '../middleware/ownership.js';
 import { authController } from '../controllers/auth-controller.js';
 import { catalogController } from '../controllers/catalog-controller.js';
@@ -12,6 +13,7 @@ import { ApiError } from '../utils/errors.js';
 export function apiRoutes(db, config) {
   const router = Router();
   const auth = authController(db, config);
+  const approval = approvalController(db);
   const catalog = catalogController(db);
   const dashboard = dashboardController(db);
   const schedule = scheduleController(db);
@@ -30,6 +32,11 @@ export function apiRoutes(db, config) {
   router.post('/auth/login', authLimiter, auth.login);
   router.post('/auth/logout', loggedIn, auth.logout);
   router.get('/auth/me', loggedIn, auth.me);
+  router.patch('/auth/me', loggedIn, auth.updateMe);
+  router.get('/pengajuan-pengelola', loggedIn, chair, approval.list);
+  router.get('/pengajuan-pengelola/:id', loggedIn, chair, approval.detail);
+  router.post('/pengajuan-pengelola/:id/setujui', loggedIn, chair, approval.approve);
+  router.post('/pengajuan-pengelola/:id/tolak', loggedIn, chair, approval.reject);
   router.get('/jenis-sampah', catalog.list);
   router.get('/jenis-sampah/:id/harga', catalog.price);
   router.post('/harga-sampah', loggedIn, manager, catalog.addPrice);

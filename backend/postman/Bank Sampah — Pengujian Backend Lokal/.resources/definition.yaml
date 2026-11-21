@@ -1,16 +1,5 @@
 $kind: collection
-description: |-
-  Pengujian berurutan sesuai routes/controllers backend aktual. Lihat backend/docs/POSTMAN.md untuk panduan dan hasil yang diharapkan tiap request.
-
-  Persiapan: jalankan backend, siapkan akun pengelola uji melalui npm run create:pengelola, impor environment Bank-Sampah-Local, lalu isi pengelola_email dan ketiga password secara lokal. Token pengelola, nasabah A, dan nasabah B terpisah; tidak menggunakan cookie. Semua request memiliki Authorization eksplisit.
-
-  base_url default http://localhost:3000/api. Database tujuan tetap DATABASE_URL milik proses backend, biasanya dari backend/.env. Local hanya menunjukkan alamat HTTP: Neon tetap dapat menjadi database tujuan. Setiap putaran lengkap menambahkan 2 akun nasabah, 2 jadwal, 2 pengajuan, dan 2 transaksi uji. Gunakan database/branch Neon khusus uji. Collection tidak menghapus data secara otomatis dan tidak mengubah harga katalog.
-
-  Jalankan 01–55 satu per satu (Send) atau seluruh collection satu iterasi. Request 01 selalu membuat penanda baru dan mereset token/ID/hasil uji, tetapi mempertahankan konfigurasi password/base_url. Jangan mengulang 01 di tengah putaran. Akun diberi nama POSTMAN UJI, email example.test, dan catatan jadwal/pengajuan memakai run_id.
-
-  Skrip otomatis mengambil token/ID/tarif, membekukan body dan kunci setoran untuk retry, serta memeriksa saldo_awal + nilai transaksi unik. Respons negatif 400/401/403/404/409/422 memang diharapkan pada request bertanda NEGATIF. Hentikan urutan jika sebuah test gagal.
-
-  Password dan token pada file ekspor hanya placeholder. Jangan membagikan/commit environment yang telah berisi nilai lokal. Tanggal uji mengikuti hari Jakarta; mulai putaran baru bila melewati tengah malam.
+description: Pengujian database terpisah. Jalankan folder 01, 01a, 02–09, 10 sesuai order. Bootstrap tepat dua ketua uji dahulu; pengelola biasa diregistrasikan dan disetujui dalam collection. Isi ketua_1/2_email, ketua_1/2_password serta password pengelola dan dua nasabah lokal. Request 01 membuat identitas unik dan mereset token/ID. Jangan ulangi 01 di tengah putaran. Lihat docs/POSTMAN.md.
 scripts:
   - type: http:beforeRequest
     code: |-
@@ -19,6 +8,7 @@ scripts:
         pm.execution.skipRequest();
         throw new Error('Pilih environment Bank-Sampah-Local dan isi base_url berakhiran /api tanpa slash terakhir.');
       }
+      if (pm.environment.get('test_database_confirmed') !== 'true') { pm.execution.skipRequest(); throw new Error('Pastikan backend memakai database pengujian lalu isi test_database_confirmed=true.'); }
     language: text/javascript
 auth:
   - id: ""

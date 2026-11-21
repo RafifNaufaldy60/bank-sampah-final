@@ -1,4 +1,29 @@
-# Hasil verifikasi — 18 November 2026
+# Hasil verifikasi — persetujuan pengelola, 21 November 2026
+
+Neon **hanya diinspeksi read-only** pada pekerjaan ini. Koneksi awal sandbox EACCES, kemudian inspeksi dengan akses jaringan yang sesuai berhasil. Bukti metadata terbaru: [account-inspection.json](account-inspection.json). Database `bank_sampah/public` memiliki 1 pengelola dan 7 nasabah aktif; migration yang tercatat masih hanya 001, checksum cocok. Migration 002 dan bootstrap tidak dijalankan pada Neon.
+
+Pengujian mutasi memakai **PostgreSQL lokal 18.6**, database `bank_sampah_approval_test` pada loopback port 55439. Schema fixture dibuat dari metadata dasar, bukan salinan data pribadi, lalu dibersihkan. `TEST_DATABASE_URL` wajib dan tidak boleh menunjuk database proyek yang sama. Frontend tidak diubah.
+
+| Pemeriksaan yang benar-benar dijalankan | Hasil |
+| --- | --- |
+| `node --test test/unit.test.js test/approval.test.js test/integration.test.js test/regression.test.js test/postman.test.js` | **43 lulus**, 0 gagal, 0 dilewati (termasuk parent subtest) |
+| `npm run check` | Semua JavaScript valid |
+| CLI resmi Postman 1.80.0 `collection lint` | **79 request, 0 error, 0 warning** |
+| `npm run test:postman:integration` dengan CLI resmi | **79 request, 239 assertion lulus**, 0 gagal; database lokal terpisah |
+| `git diff --check` | Tidak ada error whitespace |
+| Cleanup database tes | 0 schema `bs_test_*` tersisa; server PostgreSQL sementara dihentikan setelah tes |
+
+Tes baru meliputi backfill akun aktif/nonaktif, default pending, constraint ketua/status, migration tracking dan konflik schema; bootstrap tepat dua, idempotensi tanpa reset password, rollback konflik, mode existing eksplisit, penolakan nasabah/pending/blokir; nasabah active, pengelola pending tanpa sesi, pending/ditolak 403 hanya setelah password benar, sandi salah generik termasuk sandi pendek; allowlist registrasi/profil; daftar/detail/pagination/filter; 401/403/404/409; keputusan bersamaan satu pemenang dan metadata utuh; token lama pada pending/ditolak/nonaktif dan pencabutan ketua terbaru dari DB.
+
+Seluruh tes fitur lama tetap berjalan: setoran multijenis, saldo, retry/idempotensi, tarif, jadwal, penjemputan, kepemilikan, riwayat, ringkasan, ekspor XLSX, logout dan revocation. Semua 55 request Postman lama dipertahankan, ditambah 24 request persetujuan/otorisasi/logout ketua. `yaml` hanya dev dependency untuk tooling/tes.
+
+Belum diuji: penerapan migration/bootstrap pada Neon produksi (sengaja tidak dilakukan), impor visual lewat UI Postman Local Mode, dan integrasi frontend. Validasi format v3 dan eksekusi HTTP melalui CLI resmi **sudah** diuji. Bukti hasil ini tidak menyatakan sudah deploy.
+
+File utama perubahan: migration 002; `auth-controller`, `approval-controller`, middleware auth, routes, `account-service`, `chair-bootstrap`; CLI bootstrap/inspeksi akun/runner Postman dan create-manager; test approval/integration/regression/postman serta helper DB terpisah; package/lockfile, `.env.example`; README/API/panduan persetujuan/panduan Postman/verifikasi; environment dan collection YAML. Snapshot schema dasar lama dan migration 001 tidak diubah.
+
+## Riwayat verifikasi 18 November 2026 (sebelum fitur persetujuan)
+
+Catatan berikut berasal dari pekerjaan sebelumnya; aturan registrasi, fallback database tes, dan artefak Postman lama telah digantikan oleh implementasi/panduan 21 November di atas. Penerapan migration 001 di bawah adalah peristiwa lama, bukan penerapan migration pada pekerjaan ini.
 
 Implementasi diuji dengan Node.js 24.19.0, npm 11.17.0, Express 5.3.0, pg 8.23.1, dan PostgreSQL Neon 18.7. Semua perintah dijalankan dari folder `backend`.
 

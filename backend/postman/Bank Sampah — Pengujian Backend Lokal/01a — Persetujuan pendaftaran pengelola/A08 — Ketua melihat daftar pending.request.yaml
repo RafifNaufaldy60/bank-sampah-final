@@ -1,0 +1,30 @@
+$kind: http-request
+description: "Hasil yang diharapkan: HTTP 200. A08 — Ketua melihat daftar pending. Hanya database pengujian."
+url: "{{base_url}}/pengajuan-pengelola?status=pending&limit=100&page=1"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_ketua_1}}"
+scripts:
+  - type: beforeRequest
+    code: |+
+      for (const key of ["token_ketua_1"]) {
+        const value = pm.environment.get(key);
+        if (!value || String(value).startsWith('<')) { pm.execution.skipRequest(); throw new Error('Isi variabel: ' + key); }
+      }
+
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 200', () => pm.response.to.have.status(200));
+      pm.test('Respons JSON tanpa rahasia', () => { pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'); pm.expect(pm.response.text()).not.to.include('password_hash'); });
+      if (pm.response.code === 200) {
+        const json = pm.response.json();
+        const data = json.data;
+      pm.test('Daftar berpaginasi', () => { pm.expect(data).to.be.an('array'); pm.expect(json.meta.page).to.eql(1); pm.expect(json.meta.limit).to.eql(100); pm.expect(data.some(a => a.id === pm.environment.get('pengelola_id'))).to.eql(true); pm.expect(data.every(a => a.status_akun === 'pending' && a.is_ketua === false && a.peran === 'pengelola')).to.eql(true); });
+      }
+    language: text/javascript
+order: 8000

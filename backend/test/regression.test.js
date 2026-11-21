@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto';
 import ExcelJS from 'exceljs';
 import { isolatedDatabase } from './helpers/isolated-db.js';
 import { createManager } from '../src/services/account-service.js';
+import { bootstrapChairs } from '../src/services/chair-bootstrap.js';
 import { createApp } from '../src/app.js';
 import { todayJakarta, shiftDays } from '../src/utils/dates.js';
 
@@ -26,6 +27,9 @@ test('Regresi tarif, retry legacy, dan ekspor setelah pembaruan dependensi', { t
       return binary ? Buffer.from(await response.arrayBuffer()) : response.json();
     };
     const customer = (await request('/auth/register', { body: { nama: '=2+2', email: 'regresi-n@example.test', password: 'Sandi-Regresi-12345' }, expected: 201 })).data;
+    const chairs = await bootstrapChairs(db, [1,2].map(n => ({ mode: 'create', nama: `Ketua ${n}`, email: `ketua${n}@example.test`, password: 'Sandi-Regresi-12345' })));
+    token = (await request('/auth/login', { body: { email: chairs[0].email, password: 'Sandi-Regresi-12345' } })).data.token;
+    await request(`/pengajuan-pengelola/${manager.id}/setujui`, { body: {} });
     token = (await request('/auth/login', { body: { email: manager.email, password: 'Sandi-Regresi-12345' } })).data.token;
     const today = todayJakarta();
     const body = { nasabah_id: customer.id, tanggal_setoran: today, rincian: [{ jenis_sampah_id: 1, berat_kg: '1' }, { jenis_sampah_id: 3, berat_kg: '2' }] };

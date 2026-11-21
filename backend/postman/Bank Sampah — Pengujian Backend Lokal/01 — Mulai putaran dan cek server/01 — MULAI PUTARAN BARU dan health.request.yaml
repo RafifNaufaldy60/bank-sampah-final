@@ -23,8 +23,11 @@ scripts:
         }
       }
       for (const key of ["run_id","tanggal_uji","nasabah_nama","nasabah_email","nasabah_lain_nama","nasabah_lain_email","pengelola_id","nasabah_id","kode_nasabah","nasabah_lain_id","jenis_sampah_id","jenis_sampah_kedua_id","harga_per_kg","harga_kedua_per_kg","jadwal_setoran_id","jadwal_id","transaksi_id","kode_transaksi","transaksi_penjemputan_id","pengajuan_id","pengajuan_tolak_id","saldo_awal","berat_awal","nilai_setoran","berat_setoran","nilai_setoran_penjemputan","berat_setoran_penjemputan","kunci_permintaan","kunci_permintaan_invalid","kunci_permintaan_penjemputan","body_setoran","body_setoran_penjemputan","jumlah_ekspor_diharapkan","token_pengelola","token_nasabah","token_nasabah_lain","token_pengelola_dicabut","token_nasabah_dicabut","token_nasabah_lain_dicabut"]) pm.environment.set(key, '');
+      for (const key of ['token_ketua_1','token_ketua_2','ketua_1_id','ketua_2_id','pengelola_tolak_id','pengelola_email','pengelola_tolak_email']) pm.environment.set(key, '');
       const run = pm.variables.replaceIn('{{$guid}}').replace(/-/g, '');
       pm.environment.set('run_id', run);
+      pm.environment.set('pengelola_email', 'uji-pengelola-' + run + '@example.test');
+      pm.environment.set('pengelola_tolak_email', 'uji-pengelola-tolak-' + run + '@example.test');
       pm.environment.set('tanggal_uji', new Date(Date.now() + 7 * 60 * 60 * 1000).toISOString().slice(0, 10));
       pm.environment.set('nasabah_nama', 'POSTMAN UJI A ' + run);
       pm.environment.set('nasabah_lain_nama', 'POSTMAN UJI B ' + run);

@@ -8,7 +8,14 @@ import { migrate } from '../../src/migrate.js';
 // Menyalin DEFINISI dari inspeksi, bukan data akun/transaksi, bukan LIKE INCLUDING DEFAULTS
 // (yang bisa menyimpan referensi sequence public). Tidak ada fallback search_path ke public.
 export async function isolatedDatabase({ beforeMigration } = {}) {
-  const url = process.env.TEST_DATABASE_URL || config.databaseUrl;
+  const url = process.env.TEST_DATABASE_URL;
+  if (!url) throw new Error('TEST_DATABASE_URL wajib: tidak ada fallback ke DATABASE_URL.');
+  const target = new URL(connectionString(url));
+  const production = config.databaseUrl ? new URL(connectionString(config.databaseUrl)) : null;
+  const host = value => value.hostname.replace('-pooler.', '.');
+  if (production && host(target) === host(production) && target.port === production.port && target.pathname === production.pathname) {
+    throw new Error('Database pengujian harus terpisah dari DATABASE_URL proyek.');
+  }
   const admin = new pg.Client({ connectionString: connectionString(url), connectionTimeoutMillis: 15000 });
   const schema = `bs_test_${Date.now()}_${randomBytes(6).toString('hex')}`;
   let created = false;

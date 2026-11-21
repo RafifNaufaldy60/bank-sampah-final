@@ -6,5 +6,4 @@ localResources:
   collections:
     - ../Bank Sampah — Pengujian Backend Lokal
   environments:
-    - ../Bank-Sampah-Local.postman_environment.json
     - ../Bank-Sampah-Local.environment.yaml

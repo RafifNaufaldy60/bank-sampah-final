@@ -1,0 +1,36 @@
+$kind: http-request
+description: "Hasil yang diharapkan: HTTP 400. A14 — Registrasi manipulasi is_ketua. Hanya database pengujian."
+url: "{{base_url}}/auth/register"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{{request_body}}"
+auth:
+  type: noauth
+scripts:
+  - type: beforeRequest
+    code: |-
+      for (const key of ["run_id","pengelola_password"]) {
+        const value = pm.environment.get(key);
+        if (!value || String(value).startsWith('<')) { pm.execution.skipRequest(); throw new Error('Isi variabel: ' + key); }
+      }
+
+      const template = {"nama":"Manipulasi uji","email":"manipulasi-{{run_id}}@example.test","password":"{{pengelola_password}}","peran":"pengelola","is_ketua":true};
+      function resolve(v) { if (typeof v === 'string') return pm.variables.replaceIn(v); if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k,x]) => [k, resolve(x)])); return v; }
+      pm.variables.set('request_body', JSON.stringify(resolve(template)));
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 400', () => pm.response.to.have.status(400));
+      pm.test('Respons JSON tanpa rahasia', () => { pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'); pm.expect(pm.response.text()).not.to.include('password_hash'); });
+      if (pm.response.code === 400) {
+        const json = pm.response.json();
+        const data = json.data;
+        pm.test('Kode error', () => pm.expect(json.error.code).to.eql('VALIDASI_GAGAL'));
+
+      }
+    language: text/javascript
+order: 14000
