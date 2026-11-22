@@ -10,12 +10,15 @@ export function authController(db, config) {
       res.status(201).json({ data: await registerAccount(db, req.body) });
     },
     login: async (req, res) => {
-      const body = v.fields(req.body, ['email', 'password']);
+      const body = v.fields(req.body, ['email', 'password', 'peran']);
       const email = v.email(body.email);
+      // Peran yang dipilih pada UI hanyalah konteks login, bukan sumber hak akses.
+      // Optional agar klien lama (email + password) tetap kompatibel.
+      const peran = body.peran === undefined ? undefined : v.choice(body.peran, ['nasabah', 'pengelola'], 'peran');
       // Sandi salah yang pendek tetap respons autentikasi generik; aturan panjang baru berlaku saat membuat sandi.
       ensure(typeof body.password === 'string' && body.password.trim().length > 0 && body.password.length <= 128, 400, 'VALIDASI_GAGAL', 'Password wajib diisi, maksimal 128 karakter.');
       const password = body.password;
-      res.json({ data: await loginAccount(db, { email, password }, config, config.authClock) });
+      res.json({ data: await loginAccount(db, { email, password, peran }, config, config.authClock) });
     },
     logout: async (req, res) => {
       await db.query('DELETE FROM sesi_login WHERE token_hash=$1', [req.tokenHash]);

@@ -42,11 +42,11 @@ Base URL `http://localhost:3000/api`, JSON, `{data: ...}` untuk sukses dan `{err
 | Metode/path | Request | Respons |
 | --- | --- | --- |
 | POST `/auth/register` | `{nama,email,password,nomor_whatsapp?,peran}` | 201 `{data:akun}`, tanpa sesi/token |
-| POST `/auth/login` | `{email,password}` | 200 `{data:{akun,token,token_type:"Bearer",expires_at}}` |
+| POST `/auth/login` | `{email,password,peran?}` | 200 `{data:{akun,token,token_type:"Bearer",expires_at}}` |
 | GET `/auth/me` | `Authorization: Bearer <token>` | 200 `{data:akun}` |
 | POST `/auth/logout` | Bearer header | 200 `{data:{message:"Logout berhasil."}}`; sesi dihapus |
 
-`akun`: id, kode_akun, nama, email, nomor_whatsapp, peran, aktif, is_ketua, status_akun. ID bigint tetap string. Tidak ada hash/password/kolom lockout pada profil. Email trim + lowercase. Registrasi password 10–128 karakter; WhatsApp opsional, 8–15 digit, boleh `+`. Nasabah active; pengelola pending; is_ketua=false ditentukan backend. Field is_ketua/status_akun/aktif ditolak sebagai input publik.
+`akun`: id, kode_akun, nama, email, nomor_whatsapp, peran, aktif, is_ketua, status_akun. ID bigint tetap string. Tidak ada hash/password/kolom lockout pada profil. Email trim + lowercase. `peran` pada login opsional untuk kompatibilitas; bila disertakan, backend mencocokkannya dengan akun setelah sandi terverifikasi dan sebelum menerbitkan sesi. Pilihan peran yang salah mendapat 401 LOGIN_GAGAL generik, tanpa sesi. Registrasi password 10–128 karakter; WhatsApp opsional, 8–15 digit, boleh `+`. Nasabah active; pengelola pending; is_ketua=false ditentukan backend. Field is_ketua/status_akun/aktif ditolak sebagai input publik.
 
 | HTTP/code | Arti |
 | --- | --- |

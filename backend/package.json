@@ -19,7 +19,8 @@
     "create:pengelola": "node scripts/create-manager.js",
     "bootstrap:ketua": "node scripts/bootstrap-chairs.js",
     "dev": "node --watch index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "test:lockout:unit": "node --test test/lockout-contract.test.js"
   },
   "keywords": [],
   "author": "",

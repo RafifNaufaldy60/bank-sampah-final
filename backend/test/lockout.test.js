@@ -111,6 +111,19 @@ test('Persistent, atomic 5/15 account lockout in isolated PostgreSQL', { timeout
       await assert.rejects(run(a, 'wrong', failingDb), /Injected database failure/);
       assert.equal((await state(a)).login_failed_attempts, 0);
     });
+    await t.test('UI role choice is enforced by server, without changing account role or issuing a session', async () => {
+      const before = (await db.query('SELECT count(*)::integer AS total FROM sesi_login WHERE akun_id=$1', [a.id])).rows[0].total;
+      const wrongRole = await request({ email: a.email, password, peran: 'pengelola' });
+      assert.equal(wrongRole.res.status, 401); assert.equal(wrongRole.json.error.code, 'LOGIN_GAGAL');
+      assert.equal((await db.query('SELECT count(*)::integer AS total FROM sesi_login WHERE akun_id=$1', [a.id])).rows[0].total, before);
+      assert.equal((await state(a)).login_failed_attempts, 0);
+      const correctRole = await request({ email: a.email, password, peran: 'nasabah' });
+      assert.equal(correctRole.res.status, 200); assert.equal(correctRole.json.data.akun.peran, 'nasabah');
+      const oldClient = await request({ email: a.email, password });
+      assert.equal(oldClient.res.status, 200);
+      const invalidRole = await request({ email: a.email, password, peran: 'ketua' });
+      assert.equal(invalidRole.res.status, 400);
+    });
     await t.test('IP rate limit remains distinct from account lockout', async () => {
       let result;
       for (let i = 0; i < 31; i++) result = await request({ email: 'invalid', password });

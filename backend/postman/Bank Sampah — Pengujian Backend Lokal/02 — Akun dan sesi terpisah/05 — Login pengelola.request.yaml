@@ -8,7 +8,8 @@ description: |-
   ```json
   {
     "email": "{{pengelola_email}}",
-    "password": "{{pengelola_password}}"
+    "password": "{{pengelola_password}}",
+    "peran": "pengelola"
   }
   ```
 url: "{{base_url}}/auth/login"
@@ -43,7 +44,8 @@ scripts:
       }
       const template = {
         "email": "{{pengelola_email}}",
-        "password": "{{pengelola_password}}"
+        "password": "{{pengelola_password}}",
+        "peran": "pengelola"
       };
       let requestBody = JSON.stringify(resolve(template), null, 2);
       pm.variables.set('request_body', requestBody);

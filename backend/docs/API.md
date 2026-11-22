@@ -40,7 +40,7 @@ Tanggal: `YYYY-MM-DD`, jam WIB `HH:mm` saat input (output `HH:mm:ss`), waktu aud
 | --- | --- | --- | --- | --- |
 | GET | `/health` | Publik | — | Pemeriksaan backend |
 | POST | `/auth/register` | Publik | nama, email, password, nomor_whatsapp?, peran? | Registrasi |
-| POST | `/auth/login` | Publik | email, password | Login dan pemilihan halaman berdasarkan peran |
+| POST | `/auth/login` | Publik | email, password, peran? | Login dan pemilihan halaman berdasarkan peran |
 | POST | `/auth/logout` | Login | Bearer | Tombol logout |
 | GET | `/auth/me` | Login | Bearer | Identitas/header, pemulihan sesi |
 | PATCH | `/auth/me` | Login aktif | nama?, nomor_whatsapp? | Update profil tanpa perubahan hak akses |
@@ -101,10 +101,10 @@ Health melakukan `SELECT 1`; endpoint ini memeriksa koneksi, bukan menggantikan 
 }
 ```
 
-Registrasi tidak otomatis login. `POST /auth/login` menggunakan email dan password:
+Registrasi tidak otomatis login. `POST /auth/login` menggunakan email dan password; `peran` bersifat opsional demi kompatibilitas dengan klien lama. Bila disertakan (`nasabah` atau `pengelola`), backend memastikan pilihan cocok dengan peran akun **setelah verifikasi kata sandi**, sehingga pilihan yang tidak cocok tidak membuat sesi dan menghasilkan 401 `LOGIN_GAGAL` generik:
 
 ```json
-{ "email": "nasabah@example.test", "password": "Contoh-Sandi-12345" }
+{ "email": "nasabah@example.test", "password": "Contoh-Sandi-12345", "peran": "nasabah" }
 ```
 
 ```json

@@ -13,7 +13,7 @@ function locked(until, now) {
 // Row lock serializes verification, counters, status checks and session issuance across processes.
 // Return expected errors from the transaction so failed-attempt updates COMMIT before throwing.
 // Clock injection is for isolated tests only; production always uses the database clock.
-export async function loginAccount(db, { email, password }, config, clock = serverClock) {
+export async function loginAccount(db, { email, password, peran }, config, clock = serverClock) {
   const result = await db.transaction(async client => {
     const account = (await client.query(`SELECT ${accountColumns}, password_hash, login_failed_attempts, login_locked_until
       FROM akun WHERE lower(email)=$1 FOR UPDATE`, [email])).rows[0];
@@ -32,6 +32,9 @@ export async function loginAccount(db, { email, password }, config, clock = serv
     if (account.status_akun === 'pending') return new ApiError(403, 'ACCOUNT_PENDING', 'Pendaftaran menunggu persetujuan ketua.');
     if (account.status_akun === 'ditolak') return new ApiError(403, 'ACCOUNT_REJECTED', 'Pendaftaran ditolak.');
     if (!account.aktif || account.status_akun !== 'active') return invalid();
+    // Setelah verifikasi kata sandi & status, cocokkan opsi login dengan peran di database.
+    // Jangan membuat token untuk pilihan yang keliru; tetap gunakan pesan generik.
+    if (peran !== undefined && peran !== account.peran) return invalid();
     delete account.password_hash;
     delete account.login_failed_attempts;
     delete account.login_locked_until;
