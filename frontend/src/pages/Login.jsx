@@ -22,7 +22,7 @@ export default function Login() {
   async function submit(event) {
     event.preventDefault()
     if (loading || seconds) return
-    try { await dispatch(login({ email, password })).unwrap(); setPassword(''); navigate('/akun', { replace: true }) }
+    try { await dispatch(login({ email, password, peran })).unwrap(); setPassword(''); navigate('/akun', { replace: true }) }
     catch { setPassword('') }
   }
   return <AuthLayout><form className="auth-card auth-login-card" onSubmit={submit} aria-busy={loading}>

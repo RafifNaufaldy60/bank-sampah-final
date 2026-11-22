@@ -17,7 +17,7 @@ export const checkSession = createAsyncThunk('auth/checkSession', async (_, { re
 
 export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
   try {
-    const { data } = (await api.post('/auth/login', { email: credentials.email.trim().toLowerCase(), password: credentials.password })).data
+    const { data } = (await api.post('/auth/login', { email: credentials.email.trim().toLowerCase(), password: credentials.password, ...(credentials.peran ? { peran: credentials.peran } : {}) })).data
     session.write({ token: data.token, expires_at: data.expires_at })
     return data.akun
   } catch (error) { return rejectWithValue({ ...normalizeError(error), email: credentials.email.trim().toLowerCase() }) }
