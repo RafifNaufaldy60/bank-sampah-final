@@ -21,8 +21,8 @@ const routeSource = await readFile(new URL('../src/routes/api.js', import.meta.u
 const routes = [...routeSource.matchAll(/router\.(get|post|patch)\('([^']+)'/g)].map(m => ({ method: m[1].toUpperCase(), path: m[2] }));
 const names = new Set(environment.values.map(v => v.key));
 
-test('79 request YAML v3 sesuai routes; 55 request fitur lama tetap tersedia', () => {
-  assert.equal(requests.length, 79);
+test('89 request YAML v3 sesuai routes; 55 request fitur lama tetap tersedia', () => {
+  assert.equal(requests.length, 89);
   assert.equal(requests.filter(r => /^\d\d —/.test(r.name)).length, 55);
   for (const { name, value } of requests) {
     assert.equal(value.$kind, 'http-request');

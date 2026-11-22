@@ -29,5 +29,7 @@ export function errorHandler(error, req, res, next) {
   if (error.type === 'entity.parse.failed') [status, code, message] = [400, 'JSON_TIDAK_VALID', 'Body harus berupa JSON yang valid.'];
   if (error.type === 'entity.too.large') [status, code, message] = [413, 'BODY_TERLALU_BESAR', 'Body maksimal 32 KB.'];
   if (status >= 500) console.error('Permintaan gagal:', req.requestId, code);
-  res.status(status).json({ error: { code, message }, request_id: req.requestId });
+  const details = error instanceof ApiError && code === 'LOGIN_LOCKED' ? error.details : undefined;
+  if (details) res.set('Retry-After', String(details.retry_after_seconds));
+  res.status(status).json({ error: { code, message, ...details }, request_id: req.requestId });
 }

@@ -5,3 +5,4 @@ dist/
 !.env.example
 *.log
 .tmp-approval/
+.tmp-auth/

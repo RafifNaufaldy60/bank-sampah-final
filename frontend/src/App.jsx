@@ -1,7 +1,8 @@
-import HomePage from './pages/HomePage'
+import AppRoutes from './router'
+import './styles/auth.css'
 
 function App() {
-  return <HomePage />
+  return <AppRoutes />
 }
 
 export default App

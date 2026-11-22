@@ -1,5 +1,9 @@
 # Postman Local Mode — collection v3 YAML
 
+Pembaruan 22 November 2026: collection kini memiliki **89 request**. Folder `11 — Penguncian login akun uji` dijalankan berurutan L01–L10 setelah folder lama. L01 membuat email unik `uji-lockout-...@example.test` dan password acak; L02–L05 menguji salah 1–4, L06 mengunci, L07 menguji password benar selama terkunci/deadline tetap, L08–L10 membuktikan akun lain dapat login/logout. Script menolak email di luar pola akun uji dan memerlukan `test_database_confirmed=true`. Jangan mengganti email tersebut dengan ketua asli. Jangan mengulang L02–L06 pada akun yang sudah terkunci; mulai akun uji baru dengan L01. Pengujian expiry otomatis ada di `npm run test:lockout` dengan clock terkontrol; manual tunggu deadline server. Lihat [laporan dan perintah lengkap](AUTH-FRONTEND.md).
+
+Collection penuh dijalankan terhadap PostgreSQL lokal terpisah melalui CLI terpasang pada 22 November: 89 request, 267 assertion, 0 gagal. Tidak ada bootstrap/mutasi akun produksi.
+
 Artefak runnable berada pada direktori [Bank Sampah — Pengujian Backend Lokal](../postman/Bank%20Sampah%20—%20Pengujian%20Backend%20Lokal), dengan setiap request berupa `*.request.yaml` dan metadata folder/collection pada `.resources/definition.yaml`. Environment: [Bank-Sampah-Local.environment.yaml](../postman/Bank-Sampah-Local.environment.yaml). Ini struktur collection v3, bukan JSON yang diganti ekstensi. Tidak perlu upgrade JSON lama yang sebelumnya gagal.
 
 Format mengikuti [schema resmi Postman](https://learning.postman.com/docs/use/use-collections/collections-schemas). [CLI resmi](https://learning.postman.com/docs/postman-cli/postman-cli-collections) menyediakan `collection lint` dan `collection run`; Newman tidak menjalankan collection v3. Artefak ini telah divalidasi dan dijalankan dengan CLI resmi 1.80.0 yang tersedia bersama Postman desktop 12.37.2.

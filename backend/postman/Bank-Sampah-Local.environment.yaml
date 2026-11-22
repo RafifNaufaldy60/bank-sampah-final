@@ -2,13 +2,15 @@ name: Bank-Sampah-Local
 values:
   - key: base_url
     value: http://localhost:3000/api
-    description: Alamat HTTP backend, termasuk /api, tanpa slash terakhir. Bukan alamat database.
+    description: Alamat HTTP backend, termasuk /api, tanpa slash terakhir. Bukan
+      alamat database.
   - key: pengelola_email
     value: ""
     description: Dibuat otomatis setiap putaran dan disetujui oleh ketua.
   - key: pengelola_password
     value: <ISI_PASSWORD_PENGELOLA_SECARA_LOKAL>
-    description: Password fiktif pengelola yang didaftarkan oleh collection; isi secara lokal.
+    description: Password fiktif pengelola yang didaftarkan oleh collection; isi
+      secara lokal.
   - key: nasabah_password
     value: <ISI_PASSWORD_NASABAH_A_SECARA_LOKAL>
     description: Password akun uji A yang akan diregistrasikan; 10–128 karakter.
@@ -125,19 +127,22 @@ values:
     description: Jumlah transaksi hasil filter, sebelum pagination.
   - key: token_pengelola
     value: <TERISI_OTOMATIS_SETELAH_LOGIN>
-    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan dalam file repository.
+    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan
+      dalam file repository.
   - key: token_pengelola_dicabut
     value: <KHUSUS_UJI_LOGOUT>
     description: Salinan sementara untuk uji token dicabut; dikosongkan setelah uji 401.
   - key: token_nasabah
     value: <TERISI_OTOMATIS_SETELAH_LOGIN>
-    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan dalam file repository.
+    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan
+      dalam file repository.
   - key: token_nasabah_dicabut
     value: <KHUSUS_UJI_LOGOUT>
     description: Salinan sementara untuk uji token dicabut; dikosongkan setelah uji 401.
   - key: token_nasabah_lain
     value: <TERISI_OTOMATIS_SETELAH_LOGIN>
-    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan dalam file repository.
+    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan
+      dalam file repository.
   - key: token_nasabah_lain_dicabut
     value: <KHUSUS_UJI_LOGOUT>
     description: Salinan sementara untuk uji token dicabut; dikosongkan setelah uji 401.
@@ -165,3 +170,15 @@ values:
     value: ""
   - key: test_database_confirmed
     value: "false"
+  - key: lockout_email
+    value: ""
+    description: Email unik khusus uji lockout, dibuat L01.
+  - key: lockout_password
+    value: ""
+    description: Sandi acak khusus akun uji lockout, dibuat L01.
+  - key: lockout_until
+    value: ""
+    description: Deadline server dari L06.
+  - key: token_lockout_other
+    value: ""
+    description: Sesi akun pembanding khusus uji lockout.

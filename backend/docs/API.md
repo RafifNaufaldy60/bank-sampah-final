@@ -2,6 +2,8 @@
 
 Base URL lokal: `http://localhost:3000/api`. Semua contoh adalah data fiktif, bukan data akun Neon. Contoh tanggal memakai 18 November 2026; sesuaikan dengan tanggal operasional saat mencoba.
 
+Pembaruan autentikasi 22 November 2026: lihat [kontrak lockout dan integrasi React](AUTH-FRONTEND.md). Kesalahan password kelima mengunci akun selama 15 menit, persisten pada database. Respons HTTP 429 `LOGIN_LOCKED` menyertakan `error.locked_until`, `error.retry_after_seconds`, dan header `Retry-After`. Percobaan selama terkunci tidak memperpanjang deadline. Kode ini berbeda dari rate limit IP `TERLALU_BANYAK_PERMINTAAN`. Login memerlukan migration 003; endpoint/token/sesi existing tetap sama.
+
 ## Format umum
 
 Request JSON memakai `Content-Type: application/json`. Endpoint privat memerlukan `Authorization: Bearer <token-dari-login>`. Jangan mengirim identitas pengguna aktif dari formulir: middleware mengambilnya dari sesi yang telah diverifikasi. Nasabah tidak dapat memilih ID pemilik melalui query. Akses rincian milik orang lain mengembalikan 404.

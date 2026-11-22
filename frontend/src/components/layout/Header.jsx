@@ -1,5 +1,6 @@
 import Brand from '../common/Brand'
 import LinkButton from '../common/LinkButton'
+import { Link } from 'react-router-dom'
 
 function Header({ navigation, actions }) {
   return (
@@ -11,7 +12,7 @@ function Header({ navigation, actions }) {
 
         <nav className="main-nav" aria-label="Navigasi utama">
           {navigation.map((item) => (
-            <a className={item.active ? 'active' : ''} href={item.href} key={item.label}>
+            item.href.startsWith('/') ? <Link key={item.label} to={item.href}>{item.label}</Link> : <a className={item.active ? 'active' : ''} href={item.href} key={item.label}>
               {item.label}
             </a>
           ))}

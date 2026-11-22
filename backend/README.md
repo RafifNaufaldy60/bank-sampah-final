@@ -2,6 +2,8 @@
 
 API untuk pengelola dan nasabah. Kontrak endpoint, parameter, contoh JSON, hak akses, dan menu frontend tersedia di [docs/API.md](docs/API.md).
 
+Pembaruan 22 November 2026: login/register React, pemulihan sesi, dan lockout persisten 5 password salah / 15 menit tersedia. Lihat [laporan implementasi, migration 003, dan pengujian](docs/AUTH-FRONTEND.md). Migration 003 belum diterapkan ke Neon; migration 001/002 tidak diubah. Menurut informasi pengguna, migration persetujuan dan dua ketua sudah tersedia, sehingga jangan mengulang bootstrap pada database existing.
+
 Untuk mencoba API satu per satu melalui Postman, gunakan [panduan Postman](docs/POSTMAN.md) dan artefak v3 YAML di folder `postman`. Collection menambahkan data uji ke database yang dipakai backend; panduan menjelaskan pemilihan database tujuan, akun pengelola, variabel lokal, dan hasil setiap tahap.
 
 Pembaruan persetujuan pengelola 21 November 2026: lihat [migration, bootstrap dua ketua, dan kontrak persetujuan](docs/PERSETUJUAN-PENGELOLA.md). Schema Neon aktual diperiksa read-only; migration 002 belum dijalankan pada Neon.
@@ -48,7 +50,6 @@ Gunakan `.env` yang sudah ada. Untuk lingkungan baru, salin `.env.example` menja
 
 ```powershell
 npm run db:migrate
-npm run bootstrap:ketua
 npm run dev
 ```
 
