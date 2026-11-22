@@ -1,0 +1,251 @@
+{
+  "inspected_at": "2026-11-21T14:25:07.393Z",
+  "mode": "READ ONLY",
+  "target": [
+    {
+      "database": "bank_sampah",
+      "schema": "public",
+      "version": "18.7 (84da7d8)"
+    }
+  ],
+  "columns": [
+    {
+      "column_name": "id",
+      "data_type": "bigint",
+      "udt_name": "int8",
+      "is_nullable": "NO",
+      "column_default": null,
+      "is_identity": "YES",
+      "identity_generation": "ALWAYS",
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "column_name": "peran",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "column_name": "kode_akun",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "ALWAYS",
+      "generation_expression": "(\nCASE\n    WHEN (peran = 'nasabah'::text) THEN 'NSB-'::text\n    ELSE 'PGL-'::text\nEND || lpad((id)::text, GREATEST(5, length((id)::text)), '0'::text))"
+    },
+    {
+      "column_name": "nama",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "column_name": "email",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "column_name": "nomor_whatsapp",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "YES",
+      "column_default": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "column_name": "password_hash",
+      "data_type": "text",
+      "udt_name": "text",
+      "is_nullable": "NO",
+      "column_default": null,
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "column_name": "aktif",
+      "data_type": "boolean",
+      "udt_name": "bool",
+      "is_nullable": "NO",
+      "column_default": "true",
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    },
+    {
+      "column_name": "dibuat_pada",
+      "data_type": "timestamp with time zone",
+      "udt_name": "timestamptz",
+      "is_nullable": "NO",
+      "column_default": "now()",
+      "is_identity": "NO",
+      "identity_generation": null,
+      "is_generated": "NEVER",
+      "generation_expression": null
+    }
+  ],
+  "constraints": [
+    {
+      "conname": "akun_aktif_not_null",
+      "definition": "NOT NULL aktif"
+    },
+    {
+      "conname": "akun_dibuat_pada_not_null",
+      "definition": "NOT NULL dibuat_pada"
+    },
+    {
+      "conname": "akun_email_check",
+      "definition": "CHECK (((email = btrim(email)) AND (email <> ''::text)))"
+    },
+    {
+      "conname": "akun_email_not_null",
+      "definition": "NOT NULL email"
+    },
+    {
+      "conname": "akun_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "conname": "akun_id_peran_key",
+      "definition": "UNIQUE (id, peran)"
+    },
+    {
+      "conname": "akun_kode_akun_key",
+      "definition": "UNIQUE (kode_akun)"
+    },
+    {
+      "conname": "akun_nama_check",
+      "definition": "CHECK ((btrim(nama) <> ''::text))"
+    },
+    {
+      "conname": "akun_nama_not_null",
+      "definition": "NOT NULL nama"
+    },
+    {
+      "conname": "akun_password_hash_check",
+      "definition": "CHECK ((btrim(password_hash) <> ''::text))"
+    },
+    {
+      "conname": "akun_password_hash_not_null",
+      "definition": "NOT NULL password_hash"
+    },
+    {
+      "conname": "akun_peran_check",
+      "definition": "CHECK ((peran = ANY (ARRAY['nasabah'::text, 'pengelola'::text])))"
+    },
+    {
+      "conname": "akun_peran_not_null",
+      "definition": "NOT NULL peran"
+    },
+    {
+      "conname": "akun_pkey",
+      "definition": "PRIMARY KEY (id)"
+    }
+  ],
+  "indexes": [
+    {
+      "indexname": "akun_email_unik",
+      "indexdef": "CREATE UNIQUE INDEX akun_email_unik ON public.akun USING btree (lower(email))"
+    },
+    {
+      "indexname": "akun_id_peran_key",
+      "indexdef": "CREATE UNIQUE INDEX akun_id_peran_key ON public.akun USING btree (id, peran)"
+    },
+    {
+      "indexname": "akun_kode_akun_key",
+      "indexdef": "CREATE UNIQUE INDEX akun_kode_akun_key ON public.akun USING btree (kode_akun)"
+    },
+    {
+      "indexname": "akun_pkey",
+      "indexdef": "CREATE UNIQUE INDEX akun_pkey ON public.akun USING btree (id)"
+    }
+  ],
+  "triggers": [],
+  "tables": [
+    {
+      "table_name": "akun"
+    },
+    {
+      "table_name": "detail_setoran"
+    },
+    {
+      "table_name": "harga_sampah"
+    },
+    {
+      "table_name": "jadwal_layanan"
+    },
+    {
+      "table_name": "jenis_sampah"
+    },
+    {
+      "table_name": "layanan"
+    },
+    {
+      "table_name": "pengajuan_penjemputan"
+    },
+    {
+      "table_name": "schema_migrations"
+    },
+    {
+      "table_name": "sesi_login"
+    },
+    {
+      "table_name": "setoran"
+    },
+    {
+      "table_name": "v_harga_terkini"
+    },
+    {
+      "table_name": "v_ringkasan_pengelola"
+    },
+    {
+      "table_name": "v_riwayat_setoran"
+    },
+    {
+      "table_name": "v_saldo_nasabah"
+    }
+  ],
+  "legacy_status_counts": [
+    {
+      "peran": "nasabah",
+      "aktif": true,
+      "count": 7
+    },
+    {
+      "peran": "pengelola",
+      "aktif": true,
+      "count": 1
+    }
+  ],
+  "migrations": [
+    {
+      "name": "001_sessions_and_idempotency.sql",
+      "checksum_matches_repository": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Use this workspace to collaborate
+workspace:
+  id: f9a90d45-e0dd-4f90-8d89-7f9be971f69b
+
+localResources:
+  collections:
+    - ../Bank Sampah — Pengujian Backend Lokal
+  environments:
+    - ../Bank-Sampah-Local.environment.yaml

@@ -1,0 +1,31 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="415" height="320" viewBox="0 0 415 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group">
+<path id="Vector" opacity="0.24" d="M206 244C319.771 244 412 229.673 412 212C412 194.327 319.771 180 206 180C92.2293 180 0 194.327 0 212C0 229.673 92.2293 244 206 244Z" fill="#252E29"/>
+<path id="Vector_2" opacity="0.08" d="M204 320C292.366 320 364 248.366 364 160C364 71.6344 292.366 0 204 0C115.634 0 44 71.6344 44 160C44 248.366 115.634 320 204 320Z" fill="#BAC7A7"/>
+<path id="Vector_3" d="M99 172C76 111 105 57 168 40C185 103 160 156 99 172Z" fill="#BAC7A7"/>
+<path id="Vector_4" d="M99 172C116 123 137 87 165 59" stroke-width="3" stroke-linecap="round" stroke="#4F6357"/>
+<path id="Vector_5" d="M99 172C62 139 50 96 71 61C116 86 129 132 99 172Z" fill="#889E81"/>
+<path id="Vector_6" d="M99 172L75 75" stroke-width="2.5" stroke-linecap="round" stroke="#4F6357"/>
+<g id="Group_2">
+<path id="Vector_7" d="M182 111H292L282 258C280.667 267.333 275.333 272 266 272H208C198.667 272 193.333 267.333 192 258L182 111Z" fill="#F1F5E8" stroke-width="3" stroke="#889E81"/>
+<path id="Vector_8" d="M175 109H299V123H175V109Z" fill="#889E81"/>
+<path id="Vector_9" d="M219 98H255" stroke-width="7" stroke-linecap="round" stroke="#BAC7A7"/>
+<path id="Vector_10" d="M237 155C218 155 209 171 209 188C209 205 222 218 237 218C252 218 265 205 265 188C265 171 256 155 237 155Z" fill="#889E81"/>
+<path id="Vector_11" d="M255 165C241 174 236 188 237 206C231 191 222 182 215 178" stroke-width="3" stroke-linecap="round" stroke="#BAC7A7"/>
+<g id="Vector_12">
+<path d="M236 223V242Z" fill="#BAC7A7"/>
+<path d="M236 223V242" stroke-width="3" stroke-linecap="round" stroke="#BAC7A7"/>
+</g>
+</g>
+<g id="Group_3">
+<g id="Vector_13" opacity="0.16">
+<path d="M377 108C397.987 108 415 90.9868 415 70C415 49.0132 397.987 32 377 32C356.013 32 339 49.0132 339 70C339 90.9868 356.013 108 377 108Z" fill="#BAC7A7"/>
+<mask id="stroke0_0_40" fill="white">
+<path d="M377 108C397.987 108 415 90.9868 415 70C415 49.0132 397.987 32 377 32C356.013 32 339 49.0132 339 70C339 90.9868 356.013 108 377 108Z"/>
+</mask>
+<path d="M415 70C415 90.9868 397.987 108 377 108C356.013 108 339 90.9868 339 70C339 49.0132 356.013 32 377 32C397.987 32 415 49.0132 415 70Z" stroke-width="2" stroke="#BAC7A7" mask="url(#stroke0_0_40)"/>
+</g>
+<path id="Vector_14" d="M363 76.2773C363 62.2773 374 53.2773 391 55.2773C391 72.2773 381 84.2773 366 84.2773C371 74.2773 378 67.2773 387 62.2773" stroke-width="3" stroke-linecap="round" stroke="#BAC7A7"/>
+</g>
+</g>
+</svg>

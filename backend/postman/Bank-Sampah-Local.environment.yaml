@@ -1,0 +1,184 @@
+name: Bank-Sampah-Local
+values:
+  - key: base_url
+    value: http://localhost:3000/api
+    description: Alamat HTTP backend, termasuk /api, tanpa slash terakhir. Bukan
+      alamat database.
+  - key: pengelola_email
+    value: ""
+    description: Dibuat otomatis setiap putaran dan disetujui oleh ketua.
+  - key: pengelola_password
+    value: <ISI_PASSWORD_PENGELOLA_SECARA_LOKAL>
+    description: Password fiktif pengelola yang didaftarkan oleh collection; isi
+      secara lokal.
+  - key: nasabah_password
+    value: <ISI_PASSWORD_NASABAH_A_SECARA_LOKAL>
+    description: Password akun uji A yang akan diregistrasikan; 10–128 karakter.
+  - key: nasabah_lain_password
+    value: <ISI_PASSWORD_NASABAH_B_SECARA_LOKAL>
+    description: Password akun uji B untuk pengujian kepemilikan; 10–128 karakter.
+  - key: berat_1_kg
+    value: "2.500"
+    description: Berat jenis pertama setoran langsung; maksimal 3 desimal.
+  - key: berat_2_kg
+    value: "1.250"
+    description: Berat jenis kedua setoran langsung.
+  - key: berat_penjemputan_kg
+    value: "10.000"
+    description: Berat aktual untuk transaksi penjemputan.
+  - key: run_id
+    value: ""
+    description: Penanda unik putaran uji; dibuat request 01.
+  - key: tanggal_uji
+    value: ""
+    description: Hari operasional Jakarta; dibuat request 01 dan tetap selama satu putaran.
+  - key: nasabah_nama
+    value: ""
+    description: Nama POSTMAN UJI A dengan penanda putaran.
+  - key: nasabah_email
+    value: ""
+    description: Email fiktif unik A pada domain example.test.
+  - key: nasabah_lain_nama
+    value: ""
+    description: Nama POSTMAN UJI B.
+  - key: nasabah_lain_email
+    value: ""
+    description: Email fiktif unik B.
+  - key: pengelola_id
+    value: ""
+    description: ID akun pengelola dari login.
+  - key: nasabah_id
+    value: ""
+    description: ID nasabah A.
+  - key: kode_nasabah
+    value: ""
+    description: Kode akun nasabah A untuk pencarian.
+  - key: nasabah_lain_id
+    value: ""
+    description: ID nasabah B.
+  - key: jenis_sampah_id
+    value: ""
+    description: Jenis pertama yang memiliki tarif pada tanggal uji.
+  - key: jenis_sampah_kedua_id
+    value: ""
+    description: Jenis kedua yang memiliki tarif; berbeda dari jenis pertama.
+  - key: harga_per_kg
+    value: ""
+    description: Tarif jenis pertama.
+  - key: harga_kedua_per_kg
+    value: ""
+    description: Tarif jenis kedua.
+  - key: jadwal_setoran_id
+    value: ""
+    description: Jadwal setoran umum buatan uji; kemudian ditutup.
+  - key: jadwal_id
+    value: ""
+    description: Jadwal penjemputan tersedia buatan uji.
+  - key: transaksi_id
+    value: ""
+    description: ID setoran langsung A.
+  - key: kode_transaksi
+    value: ""
+    description: Kode setoran langsung A.
+  - key: transaksi_penjemputan_id
+    value: ""
+    description: ID setoran hasil penjemputan A.
+  - key: pengajuan_id
+    value: ""
+    description: Pengajuan A untuk disetujui dan diselesaikan.
+  - key: pengajuan_tolak_id
+    value: ""
+    description: Pengajuan B tersendiri untuk ditolak.
+  - key: saldo_awal
+    value: ""
+    description: Saldo A sebelum pencatatan transaksi, disimpan sekali per putaran.
+  - key: berat_awal
+    value: ""
+    description: Total kg A sebelum pencatatan.
+  - key: nilai_setoran
+    value: ""
+    description: Nilai setoran langsung dari respons; retry tidak menjumlahkannya lagi.
+  - key: berat_setoran
+    value: ""
+    description: Total kg setoran langsung.
+  - key: nilai_setoran_penjemputan
+    value: ""
+    description: Nilai setoran penjemputan dari respons.
+  - key: berat_setoran_penjemputan
+    value: ""
+    description: Total kg hasil penjemputan.
+  - key: kunci_permintaan
+    value: ""
+    description: UUID setoran langsung. Tetap sama saat retry.
+  - key: kunci_permintaan_invalid
+    value: ""
+    description: UUID terpisah untuk input berat tidak valid.
+  - key: kunci_permintaan_penjemputan
+    value: ""
+    description: UUID khusus setoran penjemputan.
+  - key: body_setoran
+    value: ""
+    description: Salinan JSON setoran langsung, dibekukan agar retry persis sama.
+  - key: body_setoran_penjemputan
+    value: ""
+    description: Salinan JSON setoran penjemputan.
+  - key: jumlah_ekspor_diharapkan
+    value: ""
+    description: Jumlah transaksi hasil filter, sebelum pagination.
+  - key: token_pengelola
+    value: <TERISI_OTOMATIS_SETELAH_LOGIN>
+    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan
+      dalam file repository.
+  - key: token_pengelola_dicabut
+    value: <KHUSUS_UJI_LOGOUT>
+    description: Salinan sementara untuk uji token dicabut; dikosongkan setelah uji 401.
+  - key: token_nasabah
+    value: <TERISI_OTOMATIS_SETELAH_LOGIN>
+    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan
+      dalam file repository.
+  - key: token_nasabah_dicabut
+    value: <KHUSUS_UJI_LOGOUT>
+    description: Salinan sementara untuk uji token dicabut; dikosongkan setelah uji 401.
+  - key: token_nasabah_lain
+    value: <TERISI_OTOMATIS_SETELAH_LOGIN>
+    description: Diisi otomatis setelah login peran ini; jangan isi token sungguhan
+      dalam file repository.
+  - key: token_nasabah_lain_dicabut
+    value: <KHUSUS_UJI_LOGOUT>
+    description: Salinan sementara untuk uji token dicabut; dikosongkan setelah uji 401.
+  - key: ketua_1_email
+    value: <ISI_LOKAL>
+  - key: ketua_2_email
+    value: <ISI_LOKAL>
+  - key: ketua_1_password
+    value: <ISI_LOKAL>
+  - key: ketua_2_password
+    value: <ISI_LOKAL>
+  - key: token_ketua_1
+    value: ""
+  - key: token_ketua_2
+    value: ""
+  - key: ketua_1_id
+    value: ""
+  - key: ketua_2_id
+    value: ""
+  - key: pengelola_tolak_email
+    value: ""
+  - key: pengelola_tolak_id
+    value: ""
+  - key: sandi_salah
+    value: ""
+  - key: test_database_confirmed
+    value: "false"
+  - key: lockout_email
+    value: ""
+    description: Email unik khusus uji lockout, dibuat L01.
+  - key: lockout_password
+    value: ""
+    description: Sandi acak khusus akun uji lockout, dibuat L01.
+  - key: lockout_until
+    value: ""
+    description: Deadline server dari L06.
+  - key: token_lockout_other
+    value: ""
+    description: Sesi akun pembanding khusus uji lockout.

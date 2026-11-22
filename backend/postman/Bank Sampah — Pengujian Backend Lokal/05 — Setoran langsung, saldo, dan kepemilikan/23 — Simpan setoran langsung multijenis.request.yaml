@@ -1,0 +1,106 @@
+$kind: http-request
+description: |-
+  Hasil yang diharapkan: HTTP 201. Transaksi baru; meta.replayed=false. Simpan ID/kode/nilai/berat. Subtotal dihitung menggunakan tarif database dan pembulatan Rupiah per rincian.
+
+  Autentikasi: token_pengelola. Prasyarat variabel: token_pengelola, nasabah_id, tanggal_uji, jenis_sampah_id, jenis_sampah_kedua_id, berat_1_kg, berat_2_kg, harga_per_kg, harga_kedua_per_kg, saldo_awal, berat_awal, kunci_permintaan.
+
+  Body dibuat oleh Pre-request Script melalui variabel lokal request_body agar password berkarakter khusus tetap JSON valid dan retry tidak berubah. Bentuk input:
+  ```json
+  {
+    "nasabah_id": "{{nasabah_id}}",
+    "tanggal_setoran": "{{tanggal_uji}}",
+    "pengajuan_penjemputan_id": null,
+    "rincian": [
+      {
+        "jenis_sampah_id": "{{jenis_sampah_id}}",
+        "berat_kg": "{{berat_1_kg}}"
+      },
+      {
+        "jenis_sampah_id": "{{jenis_sampah_kedua_id}}",
+        "berat_kg": "{{berat_2_kg}}"
+      }
+    ]
+  }
+  ```
+url: "{{base_url}}/setoran"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+  Idempotency-Key: "{{kunci_permintaan}}"
+body:
+  type: json
+  content: "{{request_body}}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_pengelola}}"
+scripts:
+  - type: beforeRequest
+    code: |-
+      const required = ["token_pengelola","nasabah_id","tanggal_uji","jenis_sampah_id","jenis_sampah_kedua_id","berat_1_kg","berat_2_kg","harga_per_kg","harga_kedua_per_kg","saldo_awal","berat_awal","kunci_permintaan"];
+      for (const key of required) {
+        const value = pm.environment.get(key);
+        if (value === undefined || value === null || value === '' || String(value).startsWith('<')) {
+          pm.execution.skipRequest(); throw new Error('Isi variabel lokal atau jalankan request sebelumnya: ' + key);
+        }
+        if (key.endsWith('_password') && (String(value).length < 10 || String(value).length > 128)) {
+          pm.execution.skipRequest(); throw new Error('Password harus 10–128 karakter; periksa ' + key);
+        }
+      }
+      // Substitusi melalui JSON.stringify juga aman untuk password yang berisi tanda kutip/backslash.
+      function resolve(value) {
+        if (typeof value === 'string') return pm.variables.replaceIn(value);
+        if (Array.isArray(value)) return value.map(resolve);
+        if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolve(v)]));
+        return value;
+      }
+      const template = {
+        "nasabah_id": "{{nasabah_id}}",
+        "tanggal_setoran": "{{tanggal_uji}}",
+        "pengajuan_penjemputan_id": null,
+        "rincian": [
+          {
+            "jenis_sampah_id": "{{jenis_sampah_id}}",
+            "berat_kg": "{{berat_1_kg}}"
+          },
+          {
+            "jenis_sampah_id": "{{jenis_sampah_kedua_id}}",
+            "berat_kg": "{{berat_2_kg}}"
+          }
+        ]
+      };
+      let requestBody = JSON.stringify(resolve(template), null, 2);
+      if (!pm.environment.get('body_setoran')) pm.environment.set('body_setoran', requestBody);
+      requestBody = pm.environment.get('body_setoran');
+      pm.variables.set('request_body', requestBody);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 201', () => pm.response.to.have.status(201));
+      if (pm.response.code === 201) {
+        pm.test('Respons berupa JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));
+        const json = pm.response.json();
+        const data = json.data;
+      function gram(value) { const [a, b = ''] = String(value).split('.'); return BigInt(a) * 1000n + BigInt(b.padEnd(3, '0')); }
+      pm.test('Identitas dan perhitungan transaksi benar', () => {
+        const sent = JSON.parse(pm.environment.get('body_setoran'));
+        pm.expect(data.nasabah_id).to.eql(pm.environment.get('nasabah_id')); pm.expect(data.pengelola_id).to.eql(pm.environment.get('pengelola_id'));
+        pm.expect(data.tanggal_setoran).to.eql(sent.tanggal_setoran); pm.expect(data.status).to.eql('Terverifikasi');
+        pm.expect(data.pengajuan_penjemputan_id).to.eql(null);
+        pm.expect(data.rincian.length).to.eql(sent.rincian.length); let total = 0n; let totalGram = 0n;
+        for (const item of sent.rincian) {
+          const line = data.rincian.find(row => String(row.jenis_sampah_id) === String(item.jenis_sampah_id));
+          pm.expect(Boolean(line), 'Jenis pada rincian ditemukan').to.eql(true);
+          const price = pm.environment.get(String(item.jenis_sampah_id) === pm.environment.get('jenis_sampah_id') ? 'harga_per_kg' : 'harga_kedua_per_kg');
+          pm.expect(line.harga_per_kg).to.eql(price); pm.expect(gram(line.berat_kg).toString()).to.eql(gram(item.berat_kg).toString());
+          const subtotal = (gram(item.berat_kg) * BigInt(price) + 500n) / 1000n;
+          pm.expect(line.subtotal_rp).to.eql(subtotal.toString()); total += subtotal; totalGram += gram(item.berat_kg);
+        }
+        pm.expect(data.nilai_setoran_rp).to.eql(total.toString()); pm.expect(gram(data.berat_kg).toString()).to.eql(totalGram.toString());
+        pm.expect(json.meta.replayed).to.eql(false);
+        pm.environment.set('transaksi_id', data.setoran_id); pm.environment.set('nilai_setoran', data.nilai_setoran_rp); pm.environment.set('berat_setoran', data.berat_kg); pm.environment.set('kode_transaksi', data.kode_setoran);
+      });
+      }
+    language: text/javascript
+order: 3000

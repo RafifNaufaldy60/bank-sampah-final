@@ -1,0 +1,35 @@
+$kind: http-request
+description: |-
+  Hasil yang diharapkan: HTTP 200. Biner XLSX, bukan JSON. Header unduhan dan signature ZIP valid. Simpan file lalu buka: sheet Riwayat harus memuat 2 transaksi walaupun limit=1; sheet Rincian memuat 3 baris detail.
+
+  Autentikasi: token_pengelola. Prasyarat variabel: token_pengelola, kode_nasabah, tanggal_uji, jumlah_ekspor_diharapkan.
+url: "{{base_url}}/setoran/export.xlsx?search={{kode_nasabah}}&dari={{tanggal_uji}}&sampai={{tanggal_uji}}&page=2&limit=1"
+method: GET
+headers:
+  Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_pengelola}}"
+scripts:
+  - type: beforeRequest
+    code: |-
+      const required = ["token_pengelola","kode_nasabah","tanggal_uji","jumlah_ekspor_diharapkan"];
+      for (const key of required) {
+        const value = pm.environment.get(key);
+        if (value === undefined || value === null || value === '' || String(value).startsWith('<')) {
+          pm.execution.skipRequest(); throw new Error('Isi variabel lokal atau jalankan request sebelumnya: ' + key);
+        }
+        if (key.endsWith('_password') && (String(value).length < 10 || String(value).length > 128)) {
+          pm.execution.skipRequest(); throw new Error('Password harus 10–128 karakter; periksa ' + key);
+        }
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 200', () => pm.response.to.have.status(200));
+      if (pm.response.code === 200) {
+      pm.test('Respons adalah berkas XLSX', () => { pm.expect(pm.response.headers.get('Content-Type')).to.include('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); pm.expect(pm.response.headers.get('Content-Disposition')).to.match(/attachment;.*[.]xlsx/); pm.expect(pm.response.text().slice(0, 2)).to.eql('PK'); pm.expect(pm.response.responseSize > 0).to.eql(true); });
+      }
+    language: text/javascript
+order: 4000

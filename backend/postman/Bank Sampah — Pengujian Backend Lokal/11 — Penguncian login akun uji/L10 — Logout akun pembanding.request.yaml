@@ -1,0 +1,32 @@
+$kind: http-request
+description: Hanya database pengujian terpisah. Tidak menggunakan akun ketua asli.
+url: "{{base_url}}/auth/logout"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{{request_body}}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_lockout_other}}"
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      if (pm.environment.get('test_database_confirmed') !== 'true') { pm.execution.skipRequest(); throw new Error('Gunakan database pengujian terpisah.'); }
+      if (!/^uji-lockout-[a-f0-9]+@example\.test$/.test(pm.environment.get('lockout_email') || '')) { pm.execution.skipRequest(); throw new Error('Jalankan L01; hanya akun lockout khusus yang diperbolehkan.'); }
+
+      pm.variables.set('request_body', JSON.stringify({}));
+  - type: afterResponse
+    language: text/javascript
+    code: >-
+      pm.test('HTTP 200', () => pm.response.to.have.status(200));
+
+      pm.test('Tidak membocorkan hash', () =>
+      pm.expect(pm.response.text()).not.to.include('password_hash'));
+
+      pm.environment.set('token_lockout_other','');
+order: 10000

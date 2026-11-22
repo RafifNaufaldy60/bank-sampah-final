@@ -1,16 +1,27 @@
-# React + Vite
+# Bank Sampah — React frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Halaman `/login`, `/register`, `/akun` memakai Redux Toolkit, React Router 7 dan Axios. Beranda existing ada di `/`. Lihat [laporan implementasi, kontrak API, migration dan tes](../backend/docs/AUTH-FRONTEND.md).
 
-Currently, two official plugins are available:
+Gunakan Node 24.19.x. Dari folder `frontend`:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```powershell
+npm ci
+npm run dev
+```
 
-## React Compiler
+Buka `http://localhost:5173/login`. Vite memakai port 5173 tetap agar sesuai CORS. Backend default `http://localhost:3000/api`. Opsional salin `.env.example` ke `.env.local` dan sesuaikan `VITE_API_URL`; jangan menaruh DATABASE_URL atau rahasia backend di frontend. Origin frontend harus tercantum di CLIENT_ORIGIN backend.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Backend memerlukan migration `003_login_lockout.sql` sebelum login. Migration belum diterapkan pada Neon oleh pekerjaan ini. Jangan mengulang bootstrap ketua atau membuat ulang database.
 
-## Expanding the Oxlint configuration
+```powershell
+npm test
+npm run build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Tes komponen: Vitest + React Testing Library, sesuai Vite/ESM. Tidak ada runner Jest kedua atau framework E2E baru. Preview build: `npm run preview -- --port 5173` setelah dev server dihentikan. Hosting SPA perlu fallback semua route ke `index.html`.
+
+Token opaque + expiry disimpan per tab di `sessionStorage` (`bank-sampah.session`). Refresh memulihkan identitas dari `GET /auth/me` di satu root layout. Tidak ada JWT decoding, cookie auth, atau refresh endpoint. Password hanya berada di form/thunk/API; Redux middleware menyaring argumen kredensial dan DevTools dimatikan. Tidak ada AuthContext kedua.
+
+Logout gagal mempertahankan sesi untuk retry dan menampilkan pesan bahwa server belum mengonfirmasi pencabutan. Respons profil terlambat tidak memulihkan user setelah logout. Gangguan jaringan saat bootstrap memberi retry, bukan langsung menghapus sesi.
+
+Keenam frame Figma dibaca beserta screenshot/aset. SVG lokal ada di `src/assets/auth/`. Desktop mengikuti frame dua kolom 1440×1024; mobile memakai header merek ringkas dan satu kolom. Penyesuaian fungsional: sandi minimal 10 sesuai backend, lihat/sembunyikan password, tombol tutup/lanjut pada popup, pesan persetujuan oleh ketua. Pilihan peran login hanya presentasi; peran final selalu dari backend.

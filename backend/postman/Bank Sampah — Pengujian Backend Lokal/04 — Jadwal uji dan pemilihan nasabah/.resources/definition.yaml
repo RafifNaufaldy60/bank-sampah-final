@@ -1,0 +1,3 @@
+$kind: collection
+description: Membuat dua jadwal yang dapat dikenali melalui catatan POSTMAN UJI dan run_id.
+order: 4000

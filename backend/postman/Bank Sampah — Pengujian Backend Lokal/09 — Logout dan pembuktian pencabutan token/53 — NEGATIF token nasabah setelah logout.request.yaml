@@ -1,0 +1,39 @@
+$kind: http-request
+description: |-
+  Hasil yang diharapkan: HTTP 401. Token lama benar-benar ditolak server. Salinan token dicabut kemudian dikosongkan.
+
+  Autentikasi: token_nasabah_dicabut. Prasyarat variabel: token_nasabah_dicabut.
+url: "{{base_url}}/auth/me"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_nasabah_dicabut}}"
+scripts:
+  - type: beforeRequest
+    code: |-
+      const required = ["token_nasabah_dicabut"];
+      for (const key of required) {
+        const value = pm.environment.get(key);
+        if (value === undefined || value === null || value === '' || String(value).startsWith('<')) {
+          pm.execution.skipRequest(); throw new Error('Isi variabel lokal atau jalankan request sebelumnya: ' + key);
+        }
+        if (key.endsWith('_password') && (String(value).length < 10 || String(value).length > 128)) {
+          pm.execution.skipRequest(); throw new Error('Password harus 10–128 karakter; periksa ' + key);
+        }
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 401', () => pm.response.to.have.status(401));
+      if (pm.response.code === 401) {
+        pm.test('Respons berupa JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));
+        const json = pm.response.json();
+        const data = json.data;
+        pm.test('Kode error SESI_TIDAK_VALID', () => { pm.expect(json.error.code).to.eql('SESI_TIDAK_VALID'); pm.expect(json.error.message).to.be.a('string'); pm.expect(json.request_id).to.be.a('string'); });
+      pm.environment.set('token_nasabah_dicabut', '');
+      }
+    language: text/javascript
+order: 4000
