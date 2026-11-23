@@ -40,11 +40,15 @@ const initialState = {
   user: null, initialized: false, sessionStatus: 'idle', sessionRequestId: null,
   loginStatus: 'idle', registerStatus: 'idle', logoutStatus: 'idle',
   sessionError: null, loginError: null, registerError: null, logoutError: null,
-  locks: {}, notice: null,
+  locks: {}, notice: null, generation: 0,
 }
 const slice = createSlice({
   name: 'auth', initialState,
   reducers: {
+    sessionInvalidated(state) {
+      state.user = null; state.initialized = true; state.sessionStatus = 'succeeded'
+      state.sessionRequestId = null; state.sessionError = null; state.notice = null; state.generation += 1
+    },
     dismissNotice(state) { state.notice = null },
     clearFormErrors(state) { state.loginError = null; state.registerError = null },
   },
@@ -61,6 +65,7 @@ const slice = createSlice({
       })
       .addCase(login.pending, state => { state.loginStatus = 'loading'; state.loginError = null; state.sessionRequestId = null })
       .addCase(login.fulfilled, (state, action) => {
+        state.generation += 1
         state.user = action.payload; state.initialized = true; state.sessionStatus = 'succeeded'; state.sessionError = null
         state.loginStatus = 'succeeded'; state.logoutError = null
         delete state.locks[action.payload.email.toLowerCase()]
@@ -74,6 +79,7 @@ const slice = createSlice({
       .addCase(register.fulfilled, state => { state.registerStatus = 'succeeded' })
       .addCase(register.rejected, (state, action) => { state.registerStatus = 'failed'; state.registerError = action.payload })
       .addCase(logout.pending, state => {
+        state.generation += 1
         state.logoutStatus = 'loading'; state.logoutError = null; state.sessionRequestId = null; state.notice = null
         state.sessionStatus = 'succeeded'; state.sessionError = null
       })
@@ -83,5 +89,5 @@ const slice = createSlice({
       .addCase(logout.rejected, (state, action) => { state.logoutStatus = 'failed'; state.logoutError = action.payload })
   },
 })
-export const { dismissNotice, clearFormErrors } = slice.actions
+export const { dismissNotice, clearFormErrors, sessionInvalidated } = slice.actions
 export default slice.reducer
