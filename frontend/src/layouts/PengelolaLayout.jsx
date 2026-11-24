@@ -9,8 +9,9 @@ import { ForbiddenPage } from '../components/pengelola/RouteError'
 import SummarySkeleton from '../components/pengelola/SummarySkeleton'
 
 export function PengelolaNavigation({ user, onNavigate }) {
+  const denied = useSelector(state => state.auth.chairAccessDenied)
   return <nav aria-label="Menu pengelola"><p className="nav-caption">MENU UTAMA</p>
-    {menuFor(user).map(item => <NavLink key={item.path} to={`/pengelola/${item.path}`} onClick={onNavigate} className={({ isActive }) => `dashboard-nav-link${isActive ? ' active' : ''}${item.chairOnly ? ' chair-menu' : ''}`}>
+    {menuFor(user).filter(item => !item.chairOnly || !denied).map(item => <NavLink key={item.path} to={`/pengelola/${item.path}`} onClick={onNavigate} className={({ isActive }) => `dashboard-nav-link${isActive ? ' active' : ''}${item.chairOnly ? ' chair-menu' : ''}`}>
       <span className="nav-icon"><img src={dashboardAsset(item.icon)} alt="" /></span><span>{item.label}</span>
     </NavLink>)}
   </nav>
@@ -18,7 +19,7 @@ export function PengelolaNavigation({ user, onNavigate }) {
 export function DashboardHeader({ user, title, onOpen, menuButton, mobileOpen }) {
   return <header className="dashboard-header">
     <button ref={menuButton} className="dashboard-button mobile-menu-toggle" aria-label="Buka menu navigasi" aria-controls="mobile-navigation" aria-expanded={mobileOpen} onClick={onOpen}>☰</button>
-    <div className="dashboard-title"><h1>{title}</h1><p>{title === 'Ringkasan Dashboard' ? 'Pantau aktivitas Bank Sampah Rahayu hari ini.' : 'Bank Sampah Rahayu Lestari'}</p></div>
+    <div className="dashboard-title"><h1>{title}</h1><p>{title === 'Ringkasan Dashboard' ? 'Pantau aktivitas Bank Sampah Rahayu hari ini.' : title === 'Kelola Akun Pengelola' ? 'Tinjau dan kelola data akun pengelola bank sampah yang telah terdaftar.' : 'Bank Sampah Rahayu Lestari'}</p></div>
     <details className="dashboard-profile"><summary><span className="profile-avatar" aria-hidden="true">{initials(user.nama)}</span><span className="profile-copy"><strong>{user.nama}</strong><span>PENGELOLA BANK SAMPAH DESA</span></span><img src={dashboardAsset('chevron')} alt="" /></summary>
       <div className="profile-details"><p>{user.nama}</p><p>{user.email}</p><Link to="/akun">Informasi akun</Link></div>
     </details>

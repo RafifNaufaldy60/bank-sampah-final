@@ -5,6 +5,6 @@ export const managerMenu = [
   { path: 'catatan-setoran', label: 'Catat Setoran', title: 'Catatan Setoran', icon: 'deposit' },
   { path: 'kelola-jadwal', label: 'Kelola Jadwal', icon: 'schedule' },
   { path: 'riwayat-nasabah', label: 'Riwayat Nasabah', icon: 'history' },
-  { path: 'persetujuan-akun', label: 'Kelola Akun Pengelola', title: 'Persetujuan Akun Pengelola', icon: 'approval', chairOnly: true },
+  { path: 'persetujuan-akun', label: 'Kelola Akun Pengelola', icon: 'approval', chairOnly: true },
 ]
-export const menuFor = user => managerMenu.filter(item => !item.chairOnly || user.is_ketua === true)
+export const menuFor = user => managerMenu.filter(item => !item.chairOnly || (user?.peran === 'pengelola' && user.is_ketua === true && user.status_akun === 'active' && user.aktif === true))

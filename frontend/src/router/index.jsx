@@ -14,9 +14,12 @@ import { InitialFallback } from '../components/pengelola/SummarySkeleton'
 import { managerMenu } from '../components/pengelola/navigation'
 import { createSessionLoaders } from './session'
 import ChairGuard from '../components/pengelola/ChairGuard'
+import KelolaAkunPage from '../pages/pengelola/KelolaAkunPage'
+import { createApprovalRoutes } from './approvals'
 
 export function createAppRoutes(store) {
   const loaders = createSessionLoaders(store)
+  const approvals = createApprovalRoutes(store, loaders)
   return [{
     element: <RootLayout />, loader: loaders.bootstrap, HydrateFallback: InitialFallback, errorElement: <RouteError />,
     children: [
@@ -26,9 +29,10 @@ export function createAppRoutes(store) {
       { path: 'pengelola', loader: loaders.manager, element: <PengelolaLayout />, errorElement: <RouteError />, children: [
         { index: true, element: <Navigate to="ringkasan" replace /> },
         { path: 'ringkasan', loader: loaders.summary, element: <RingkasanPage />, errorElement: <RouteError /> },
-        ...managerMenu.filter(item => item.path !== 'ringkasan').map(item => ({
-          path: item.path, loader: item.chairOnly ? loaders.chair : loaders.manager,
-          element: item.chairOnly ? <ChairGuard><PlaceholderPage title={item.title || item.label} /></ChairGuard> : <PlaceholderPage title={item.title || item.label} />, errorElement: <RouteError />,
+        { path: 'persetujuan-akun', loader: approvals.loader, action: approvals.action, element: <ChairGuard><KelolaAkunPage /></ChairGuard>, errorElement: <RouteError /> },
+        ...managerMenu.filter(item => item.path !== 'ringkasan' && !item.chairOnly).map(item => ({
+          path: item.path, loader: loaders.manager,
+          element: <PlaceholderPage title={item.title || item.label} />, errorElement: <RouteError />,
         })),
       ] },
       { path: '*', element: <main className="session-screen"><h1>Halaman tidak ditemukan</h1><Link to="/">Kembali ke Beranda</Link></main> },

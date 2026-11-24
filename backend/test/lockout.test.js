@@ -97,7 +97,8 @@ test('Persistent, atomic 5/15 account lockout in isolated PostgreSQL', { timeout
       }
     });
     await t.test('Invalid input and DB failure do not consume attempts; unknown email generic', async () => {
-      for (const body of [{ email: a.email, password: 123 }, { email: a.email, password: '' }, { email: a.email, password: '   ' }, { email: 'invalid', password }, { email: a.email, password, peran: 'pengelola' }]) {
+      // Valid role choices are authentication context (401 on mismatch), tested below.
+      for (const body of [{ email: a.email, password: 123 }, { email: a.email, password: '' }, { email: a.email, password: '   ' }, { email: 'invalid', password }, { email: a.email, password, peran: 'ketua' }]) {
         assert.equal((await request(body)).res.status, 400);
       }
       assert.equal((await state(a)).login_failed_attempts, 0);

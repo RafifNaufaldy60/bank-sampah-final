@@ -16,7 +16,7 @@ const deferred = () => { let resolve, reject; const promise = new Promise((yes, 
 const failure = status => ({ response: { status, data: { error: { code: status === 401 ? 'SESI_TIDAK_VALID' : 'INTERNAL_ERROR' } } } })
 function mount({ user = manager, path = '/pengelola/ringkasan', data = summaryFixture, handler } = {}) {
   if (user) session.write({ token: 'opaque-fixture', expires_at: new Date(Date.now() + 3600000).toISOString() })
-  const get = vi.spyOn(api, 'get').mockImplementation(handler || (async url => response(url === '/auth/me' ? user : data)))
+  const get = vi.spyOn(api, 'get').mockImplementation(handler || (async url => url.startsWith('/pengajuan-pengelola') ? { data: { data: [], meta: { page: 1, limit: 20, total: 0, total_pages: 0 } } } : response(url === '/auth/me' ? user : data)))
   const store = createAppStore()
   const router = createMemoryRouter(createAppRoutes(store), { initialEntries: [path] })
   render(<StrictMode><Provider store={store}><App router={router} /></Provider></StrictMode>)
@@ -47,7 +47,7 @@ describe('shared pengelola dashboard', () => {
   it('all placeholders share the layout, activate their menu and make no feature requests', async () => {
     const { get, router } = mount()
     await ready()
-    for (const [label, title, path] of [['Catat Setoran', 'Catatan Setoran', 'catatan-setoran'], ['Kelola Jadwal', 'Kelola Jadwal', 'kelola-jadwal'], ['Riwayat Nasabah', 'Riwayat Nasabah', 'riwayat-nasabah'], ['Kelola Akun Pengelola', 'Persetujuan Akun Pengelola', 'persetujuan-akun']]) {
+    for (const [label, title, path] of [['Catat Setoran', 'Catatan Setoran', 'catatan-setoran'], ['Kelola Jadwal', 'Kelola Jadwal', 'kelola-jadwal'], ['Riwayat Nasabah', 'Riwayat Nasabah', 'riwayat-nasabah']]) {
       fireEvent.click(within(screen.getByRole('navigation')).getByRole('link', { name: label }))
       expect(await screen.findByRole('heading', { name: title, level: 2 })).toBeInTheDocument()
       expect(screen.getByText('Halaman ini sedang dalam pengembangan.')).toBeInTheDocument()
@@ -67,7 +67,7 @@ describe('shared pengelola dashboard', () => {
   })
   it('a refreshed profile removing chair status immediately hides the chair page', async () => {
     const { get, store } = mount({ path: '/pengelola/persetujuan-akun' })
-    await screen.findByRole('heading', { name: 'Persetujuan Akun Pengelola', level: 2 })
+    await screen.findByRole('heading', { name: 'Daftar Pengajuan Akun Pengelola', level: 2 })
     get.mockResolvedValue(response({ ...manager, is_ketua: false }))
     await act(async () => { await store.dispatch(checkSession({ retry: true })).unwrap() })
     expect(await screen.findByRole('heading', { name: /403/ })).toBeInTheDocument()
