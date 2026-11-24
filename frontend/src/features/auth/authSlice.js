@@ -40,11 +40,17 @@ const initialState = {
   user: null, initialized: false, sessionStatus: 'idle', sessionRequestId: null,
   loginStatus: 'idle', registerStatus: 'idle', logoutStatus: 'idle',
   sessionError: null, loginError: null, registerError: null, logoutError: null,
-  locks: {}, notice: null, generation: 0,
+  locks: {}, notice: null, generation: 0, chairAccessDenied: false,
 }
 const slice = createSlice({
   name: 'auth', initialState,
   reducers: {
+    profileReceived(state, action) {
+      if (state.generation !== action.payload.generation || state.logoutStatus === 'loading') return
+      state.user = action.payload.user
+      state.chairAccessDenied = false
+    },
+    chairAccessDenied(state) { state.chairAccessDenied = true },
     sessionInvalidated(state) {
       state.user = null; state.initialized = true; state.sessionStatus = 'succeeded'
       state.sessionRequestId = null; state.sessionError = null; state.notice = null; state.generation += 1
@@ -65,6 +71,7 @@ const slice = createSlice({
       })
       .addCase(login.pending, state => { state.loginStatus = 'loading'; state.loginError = null; state.sessionRequestId = null })
       .addCase(login.fulfilled, (state, action) => {
+        state.chairAccessDenied = false
         state.generation += 1
         state.user = action.payload; state.initialized = true; state.sessionStatus = 'succeeded'; state.sessionError = null
         state.loginStatus = 'succeeded'; state.logoutError = null
@@ -89,5 +96,5 @@ const slice = createSlice({
       .addCase(logout.rejected, (state, action) => { state.logoutStatus = 'failed'; state.logoutError = action.payload })
   },
 })
-export const { dismissNotice, clearFormErrors, sessionInvalidated } = slice.actions
+export const { dismissNotice, clearFormErrors, sessionInvalidated, profileReceived, chairAccessDenied } = slice.actions
 export default slice.reducer
