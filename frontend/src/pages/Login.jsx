@@ -6,6 +6,7 @@ import RolePicker from '../components/auth/RolePicker'
 import FormField from '../components/auth/FormField'
 import { login, clearFormErrors } from '../features/auth/authSlice'
 import useLoginCountdown from '../hooks/useLoginCountdown'
+import { accountDestination } from '../router/session'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -22,7 +23,7 @@ export default function Login() {
   async function submit(event) {
     event.preventDefault()
     if (loading || seconds) return
-    try { await dispatch(login({ email, password, peran })).unwrap(); setPassword(''); navigate('/akun', { replace: true }) }
+    try { const user = await dispatch(login({ email, password, peran })).unwrap(); setPassword(''); navigate(accountDestination(user), { replace: true }) }
     catch { setPassword('') }
   }
   return <AuthLayout><form className="auth-card auth-login-card" onSubmit={submit} aria-busy={loading}>

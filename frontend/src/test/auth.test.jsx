@@ -2,7 +2,9 @@ import { StrictMode } from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, act, renderHook } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import { MemoryRouter } from 'react-router-dom'
+import { createMemoryRouter } from 'react-router-dom'
+import { createAppRoutes } from '../router'
+import { summaryFixture } from './summaryFixture'
 import { createAppStore, redactCredentials } from '../app/store'
 import { api, session, normalizeError } from '../services/api'
 import { checkSession, login, logout } from '../features/auth/authSlice'
@@ -15,7 +17,8 @@ const failure = (status, code) => ({ response: { status, data: { error: { code }
 const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no }); return { promise, resolve, reject } }
 const savedSession = () => session.write({ token: 'opaque-token', expires_at: new Date(Date.now() + 3600000).toISOString() })
 function mount(path = '/login', store = createAppStore()) {
-  render(<StrictMode><Provider store={store}><MemoryRouter initialEntries={[path]}><App /></MemoryRouter></Provider></StrictMode>)
+  const router = createMemoryRouter(createAppRoutes(store), { initialEntries: [path] })
+  render(<StrictMode><Provider store={store}><App router={router} /></Provider></StrictMode>)
   return store
 }
 function fillLogin() {
@@ -25,11 +28,12 @@ function fillLogin() {
 describe('authentication behavior', () => {
   it('single bootstrap under StrictMode, real profile/role, guest redirect without loop', async () => {
     savedSession()
-    const get = vi.spyOn(api, 'get').mockResolvedValue(response(user))
+    const get = vi.spyOn(api, 'get').mockImplementation(async path => response(path === '/auth/me' ? user : summaryFixture))
     mount('/register')
-    expect(await screen.findByRole('heading', { name: user.nama })).toBeInTheDocument()
-    expect(screen.getByText('Ketua Pengelola')).toBeInTheDocument()
-    expect(get).toHaveBeenCalledTimes(1)
+    expect(await screen.findByRole('heading', { name: 'Ringkasan Dashboard' })).toBeInTheDocument()
+    expect(screen.getAllByText(user.nama)[0]).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Kelola Akun Pengelola' })).toBeInTheDocument()
+    expect(get).toHaveBeenCalledTimes(2)
     expect(get).toHaveBeenCalledWith('/auth/me')
   })
   it('network failure on bootstrap preserves session and offers retry instead of redirect', async () => {
@@ -54,6 +58,7 @@ describe('authentication behavior', () => {
     expect(await screen.findByLabelText('Email')).toBeInTheDocument(); expect(get).not.toHaveBeenCalled()
   })
   it('login sends the selected role, prevents duplicate submit, and logs out', async () => {
+    vi.spyOn(api, 'get').mockResolvedValue(response(summaryFixture))
     const pending = deferred()
     const post = vi.spyOn(api, 'post').mockReturnValueOnce(pending.promise).mockResolvedValueOnce(response({ message: 'Logout berhasil.' }))
     const store = mount()
@@ -67,12 +72,12 @@ describe('authentication behavior', () => {
     expect(post).toHaveBeenCalledTimes(1)
     expect(post).toHaveBeenCalledWith('/auth/login', { email: user.email, password: 'Password-Test-123', peran: 'pengelola' })
     await act(async () => pending.resolve(response({ akun: user, token: 'opaque-token', expires_at: new Date(Date.now() + 3600000).toISOString() })))
-    expect(await screen.findByText('Ketua Pengelola')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Ringkasan Dashboard' })).toBeInTheDocument()
     expect(screen.getByRole('dialog')).toHaveTextContent('akun pengelola')
     expect(JSON.stringify(store.getState())).not.toContain('Password-Test-123')
     expect(JSON.stringify(store.getState())).not.toContain('opaque-token')
     fireEvent.click(screen.getByRole('button', { name: 'Tutup pemberitahuan' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Logout' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Keluar akun' }))
     expect(await screen.findByLabelText('Email')).toBeInTheDocument()
     expect(session.read()).toBeNull(); expect(post).toHaveBeenLastCalledWith('/auth/logout')
   })
