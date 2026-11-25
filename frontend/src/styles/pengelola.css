@@ -36,6 +36,7 @@
 .profile-details { position: absolute; z-index: 5; right: 0; top: calc(100% + 12px); background: white; border: 1px solid #e0e4da; padding: 18px; border-radius: 12px; box-shadow: 0 8px 24px #173f351a; min-width: 230px; max-width: 280px; overflow-wrap: anywhere; }
 .profile-details p, .profile-details a { display: block; margin: 0 0 10px; }
 .profile-details a { text-decoration: underline; }
+.profile-logout { width: 100%; margin-top: 6px; }
 .dashboard-content { padding: 30px 34px; }
 .ringkasan-page, .summary-skeleton { display: flex; flex-direction: column; gap: 24px; }
 .summary-welcome { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 28px 31px; min-height: 135px; background: #3f6357; color: #fcfcfa; border-radius: 20px; }

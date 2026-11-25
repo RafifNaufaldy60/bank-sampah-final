@@ -12,7 +12,7 @@ export function createApprovalRoutes(store, sessions) {
   const unverified = new Set()
   let submitting = false
 
-  async function authorized(request, work) {
+  async function authorized(request, work, parallelRead = false) {
     const initialized = store.getState().auth.initialized
     await sessions.manager({ request })
     const generation = store.getState().auth.generation
@@ -50,12 +50,20 @@ export function createApprovalRoutes(store, sessions) {
     }
     try {
       // A direct visit shares bootstrap's fresh profile; later visits/actions refresh it.
-      if (initialized) {
+      const refreshProfile = async () => { if (initialized) {
         const result = await api.get('/auth/me', { signal: controller.signal })
         if (stale()) throw redirect('/login')
         request.signal.throwIfAborted()
         store.dispatch(profileReceived({ user: result.data.data, generation }))
+      } }
+      if (parallelRead) {
+        assertCurrent()
+        // Both requests still authorize on the server; publish only after the fresh profile passes.
+        const [, result] = await Promise.all([refreshProfile(), work(call)])
+        assertCurrent()
+        return result
       }
+      await refreshProfile()
       assertCurrent()
       return await work(call)
     } catch (error) {
@@ -68,7 +76,7 @@ export function createApprovalRoutes(store, sessions) {
       if (error instanceof Response) throw error
       throw new Error(normalizeError(error).message)
     } finally {
-      unsubscribe(); request.signal.removeEventListener('abort', abort)
+      abort(); unsubscribe(); request.signal.removeEventListener('abort', abort)
     }
   }
 
@@ -77,10 +85,10 @@ export function createApprovalRoutes(store, sessions) {
       const url = new URL(request.url)
       const pageInput = url.searchParams.get('page') || '1'
       const page = /^[1-9]\d{0,5}$/.test(pageInput) ? Number(pageInput) : 1
-      let list = await call('get', `/pengajuan-pengelola?status=pending&page=${page}&limit=20`)
-      // Use backend metadata when a decision removes the last row of a page.
+      let list = await call('get', `/pengajuan-pengelola?status=all&page=${page}&limit=20`)
+      // Use backend metadata when a page is no longer available.
       const lastPage = Math.max(1, list.meta.total_pages)
-      if (list.meta.page > lastPage) list = await call('get', `/pengajuan-pengelola?status=pending&page=${lastPage}&limit=20`)
+      if (list.meta.page > lastPage) list = await call('get', `/pengajuan-pengelola?status=all&page=${lastPage}&limit=20`)
       const requestedId = url.searchParams.get('selected')
       const selected = list.data.find(account => account.id === requestedId) || null
       let detail = null, detailError = null, verification = null
@@ -99,7 +107,7 @@ export function createApprovalRoutes(store, sessions) {
         }
       }
       return { ...list, selected, detail, detailError, verification }
-    })
+    }, true)
   }
 
   async function action({ request }) {

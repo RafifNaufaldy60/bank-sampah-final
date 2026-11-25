@@ -18,6 +18,8 @@ export default function KelolaAkunPage() {
   const pendingId = navigation.location ? new URLSearchParams(navigation.location.search).get('selected') : data.selected?.id
   const detailLoading = navigating && pendingId !== data.selected?.id
   const selectedId = navigating ? pendingId : data.selected?.id
+  const selectedIndex = data.data.findIndex(account => account.id === selectedId)
+  const selectedNumber = selectedIndex < 0 ? null : (data.meta.page - 1) * data.meta.limit + selectedIndex + 1
   useEffect(() => { if (fetcher.state === 'idle') submitting.current = false }, [fetcher.state, fetcher.data])
 
   function select(id) { if (!submitting.current) navigate(`?page=${data.meta.page}&selected=${encodeURIComponent(id)}`, { replace: true, preventScrollReset: true }) }
@@ -33,7 +35,7 @@ export default function KelolaAkunPage() {
     {refreshing && <p className="approval-refresh" role="status">Memperbarui daftar pengajuan…</p>}
     <div className="approval-columns">
       <ApprovalTable accounts={data.data} meta={data.meta} selectedId={selectedId} disabled={deciding} busy={refreshing || navigating} onSelect={select} onPage={page => navigate(`?page=${page}`, { preventScrollReset: true })} onRetry={() => revalidator.revalidate()} />
-      <ApprovalDetail key={selectedId || 'none'} selected={data.selected} detail={data.detail} error={data.detailError} loading={detailLoading} busy={deciding} blocked={uncertain || refreshing || navigating} onRetry={() => revalidator.revalidate()} onDecision={decide} />
+      <ApprovalDetail key={selectedId || 'none'} selected={data.selected} number={selectedNumber} detail={data.detail} error={data.detailError} loading={detailLoading} busy={deciding} blocked={uncertain || refreshing || navigating} onRetry={() => revalidator.revalidate()} onDecision={decide} />
     </div>
   </div>
 }

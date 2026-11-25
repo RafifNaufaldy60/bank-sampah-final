@@ -16,10 +16,13 @@ import { createSessionLoaders } from './session'
 import ChairGuard from '../components/pengelola/ChairGuard'
 import KelolaAkunPage from '../pages/pengelola/KelolaAkunPage'
 import { createApprovalRoutes } from './approvals'
+import { createHistoryRoutes } from './history'
+import RiwayatNasabahPage from '../pages/pengelola/RiwayatNasabahPage'
 
 export function createAppRoutes(store) {
   const loaders = createSessionLoaders(store)
   const approvals = createApprovalRoutes(store, loaders)
+  const history = createHistoryRoutes(store, loaders)
   return [{
     element: <RootLayout />, loader: loaders.bootstrap, HydrateFallback: InitialFallback, errorElement: <RouteError />,
     children: [
@@ -29,8 +32,9 @@ export function createAppRoutes(store) {
       { path: 'pengelola', loader: loaders.manager, element: <PengelolaLayout />, errorElement: <RouteError />, children: [
         { index: true, element: <Navigate to="ringkasan" replace /> },
         { path: 'ringkasan', loader: loaders.summary, element: <RingkasanPage />, errorElement: <RouteError /> },
+        { path: 'riwayat-nasabah', loader: history.loader, element: <RiwayatNasabahPage />, errorElement: <RouteError /> },
         { path: 'persetujuan-akun', loader: approvals.loader, action: approvals.action, element: <ChairGuard><KelolaAkunPage /></ChairGuard>, errorElement: <RouteError /> },
-        ...managerMenu.filter(item => item.path !== 'ringkasan' && !item.chairOnly).map(item => ({
+        ...managerMenu.filter(item => !['ringkasan', 'riwayat-nasabah'].includes(item.path) && !item.chairOnly).map(item => ({
           path: item.path, loader: loaders.manager,
           element: <PlaceholderPage title={item.title || item.label} />, errorElement: <RouteError />,
         })),

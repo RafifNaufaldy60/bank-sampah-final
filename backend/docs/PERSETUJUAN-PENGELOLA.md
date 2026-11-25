@@ -117,11 +117,13 @@ Login selalu memverifikasi password dahulu. Sandi salah, termasuk sandi pendek, 
 
 | Metode dan path | Input / hasil |
 | --- | --- |
-| GET `/pengajuan-pengelola` | Query `status=pending` default, atau active/ditolak; `page=1`, `limit=20` default; `{data:[...],meta:{page,limit,total,total_pages}}` |
+| GET `/pengajuan-pengelola` | Query `status=pending` default, atau active/ditolak/all; `page=1`, `limit=20` default; `{data:[...],meta:{page,limit,total,total_pages,pending_total}}` |
 | GET `/pengajuan-pengelola/:id` | Detail pengelola non-ketua beserta metadata; 404 untuk target di luar lingkup |
 | POST `/pengajuan-pengelola/:id/setujui` | Body `{}` atau tanpa body; 200, status active |
 | POST `/pengajuan-pengelola/:id/tolak` | Body `{"alasan_penolakan":"Dokumen belum lengkap"}`; 200, status ditolak |
 | PATCH `/auth/me` | Login aktif; hanya `nama` dan/atau `nomor_whatsapp`; respons profil terbaru |
+
+`status=all` menampilkan pengelola non-ketua dari semua status, diurutkan pending terlebih dahulu lalu ID terbaru. `pending_total` adalah jumlah pengajuan pending dalam filter di seluruh halaman, bukan hanya halaman yang sedang tampil.
 
 Keempat endpoint pengajuan hanya untuk `peran=pengelola`, `is_ketua=true`, `status_akun=active`, `aktif=true`. Tanpa autentikasi 401; nasabah/pengelola biasa 403. Target keputusan harus pengelola non-ketua pending yang tidak diblokir. Target absen 404; nasabah/ketua/akun yang sudah diputuskan/diblokir 409 `PENGAJUAN_TIDAK_DAPAT_DIPUTUSKAN`.
 

@@ -27,12 +27,15 @@ export function approvalController(db) {
     list: async (req, res) => {
       v.fields(req.query, ['page', 'limit', 'status']);
       const { page, limit, offset } = v.pagination(req.query);
-      const status = v.choice(req.query.status ?? 'pending', ['active', 'pending', 'ditolak'], 'status');
+      const status = v.choice(req.query.status ?? 'pending', ['all', 'active', 'pending', 'ditolak'], 'status');
       const result = await db.transaction(async client => {
-        const total = (await client.query("SELECT count(*) FROM akun WHERE peran='pengelola' AND NOT is_ketua AND status_akun=$1", [status])).rows[0].count;
+        const counts = (await client.query(`SELECT count(*) AS total,
+          count(*) FILTER (WHERE status_akun='pending') AS pending_total
+          FROM akun WHERE peran='pengelola' AND NOT is_ketua AND ($1='all' OR status_akun=$1)`, [status])).rows[0];
         const data = (await client.query(`SELECT ${columns} FROM akun
-          WHERE peran='pengelola' AND NOT is_ketua AND status_akun=$1 ORDER BY id DESC LIMIT $2 OFFSET $3`, [status, limit, offset])).rows;
-        return { data, meta: v.pageMeta(total, page, limit) };
+          WHERE peran='pengelola' AND NOT is_ketua AND ($1='all' OR status_akun=$1)
+          ORDER BY (status_akun='pending') DESC, id DESC LIMIT $2 OFFSET $3`, [status, limit, offset])).rows;
+        return { data, meta: { ...v.pageMeta(counts.total, page, limit), pending_total: Number(counts.pending_total) } };
       }, { readOnly: true, repeatableRead: true });
       res.json(result);
     },

@@ -12,7 +12,7 @@ import { todayJakarta, shiftDays, dateRange } from '../src/utils/dates.js';
 import { digest } from '../src/utils/security.js';
 
 let fixture, db, server, base, a, b, manager, manager2, direct, regularSchedule, pickupSchedule, pickupId, legacyId;
-let tokenA, tokenB, tokenM, tokenM2;
+let tokenA, tokenB, tokenM, tokenM2, chairToken;
 const password = 'Sandi-Uji-Terisolasi-123';
 const today = todayJakarta();
 const customerInput = suffix => ({ nama: `Nasabah Uji ${suffix}`, email: `nasabah-${suffix}@example.test`, password, nomor_whatsapp: '081234567890' });
@@ -80,7 +80,7 @@ test('Alur HTTP dan transaksi PostgreSQL pada schema terisolasi', { timeout: 600
     manager = await createManager(db, { nama: 'Pengelola Uji 1', email: 'pengelola1@example.test', password });
     manager2 = await createManager(db, { nama: 'Pengelola Uji 2', email: 'pengelola2@example.test', password });
     const chairs = await bootstrapChairs(db, [1,2].map(n => ({ mode: 'create', nama: `Ketua ${n}`, email: `ketua${n}@example.test`, password })));
-    const chairToken = (await api('/auth/login', { method: 'POST', body: { email: chairs[0].email, password } })).data.token;
+    chairToken = (await api('/auth/login', { method: 'POST', body: { email: chairs[0].email, password } })).data.token;
     for (const target of [manager, manager2]) {
       await api(`/pengajuan-pengelola/${target.id}/setujui`, { method: 'POST', token: chairToken, body: {} });
     }
@@ -195,6 +195,16 @@ test('Alur HTTP dan transaksi PostgreSQL pada schema terisolasi', { timeout: 600
     assert.equal(all.meta.total, 6);
     assert.equal((await api('/setoran?page=999', { token: tokenA })).meta.total, 6);
     assert.equal((await api(`/setoran?search=${direct.kode_setoran}`, { token: tokenM })).data[0].setoran_id, direct.setoran_id);
+    const regular = await api('/setoran?limit=100', { token: tokenM });
+    const chairHistory = await api('/setoran?limit=100', { token: chairToken });
+    assert.deepEqual(chairHistory.data, regular.data);
+    assert.equal((await api(`/setoran?search=${encodeURIComponent(a.nama)}`, { token: tokenM })).meta.total, 6);
+    assert.equal((await api(`/setoran?search=${a.kode_akun}`, { token: chairToken })).meta.total, 6);
+    assert.equal(new Set(regular.data.map(row => row.setoran_id)).size, regular.data.length);
+    for (let i = 1; i < regular.data.length; i++) {
+      const previous = regular.data[i - 1], current = regular.data[i];
+      assert.ok(previous.tanggal_setoran > current.tanggal_setoran || (previous.tanggal_setoran === current.tanggal_setoran && BigInt(previous.setoran_id) > BigInt(current.setoran_id)));
+    }
     const initialBalance = (await api('/saldo', { token: tokenA })).data;
     assert.equal(initialBalance.saldo_rp, '34336');
     for (const periode of ['tiga_bulan', 'bulan_ini', 'tahun_ini']) {

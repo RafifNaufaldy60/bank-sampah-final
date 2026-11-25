@@ -47,7 +47,7 @@ describe('shared pengelola dashboard', () => {
   it('all placeholders share the layout, activate their menu and make no feature requests', async () => {
     const { get, router } = mount()
     await ready()
-    for (const [label, title, path] of [['Catat Setoran', 'Catatan Setoran', 'catatan-setoran'], ['Kelola Jadwal', 'Kelola Jadwal', 'kelola-jadwal'], ['Riwayat Nasabah', 'Riwayat Nasabah', 'riwayat-nasabah']]) {
+    for (const [label, title, path] of [['Catat Setoran', 'Catatan Setoran', 'catatan-setoran'], ['Kelola Jadwal', 'Kelola Jadwal', 'kelola-jadwal']]) {
       fireEvent.click(within(screen.getByRole('navigation')).getByRole('link', { name: label }))
       expect(await screen.findByRole('heading', { name: title, level: 2 })).toBeInTheDocument()
       expect(screen.getByText('Halaman ini sedang dalam pengembangan.')).toBeInTheDocument()

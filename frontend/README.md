@@ -40,13 +40,13 @@ Desain menampilkan contoh status campuran, tetapi implementasi mengambil **pendi
 - `src/styles/approvals.css`: tampilan desktop/mobile.
 - `src/components/pengelola/ChairGuard.jsx`, `navigation.js`, `SummarySkeleton.jsx`, `src/layouts/PengelolaLayout.jsx`, `src/features/auth/authSlice.js`: izin ketua, menu, judul, HydrateFallback, dan penerimaan profil backend yang terikat generasi sesi.
 - `src/test/approvals.test.jsx`, `src/test/pengelola.test.jsx`: pengujian halaman dan penyesuaian tes placeholder.
-- `../backend/test/lockout.test.js`: memperbaiki input tes lama dari role valid `pengelola` ke role tidak valid `ketua`. Kasus role mismatch yang menghasilkan 401 tetap diuji. Kode runtime backend, migration, dan bootstrap tidak diubah.
+- `../backend/src/controllers/approval-controller.js`: filter `status=all` dan jumlah pengajuan menunggu lintas halaman; kontrak default `status=pending` tetap tersedia.
 
 Axios bersama memakai token ketua yang sedang login. Kontrak aktual:
 
 | Aksi | Endpoint dengan prefix `/api` | Payload/respons |
 | --- | --- | --- |
-| Daftar | `GET /pengajuan-pengelola?status=pending&page=1&limit=20` | `{ data: [...], meta: { page, limit, total, total_pages } }` |
+| Daftar | `GET /pengajuan-pengelola?status=all&page=1&limit=20` | `{ data: [...], meta: { page, limit, total, total_pages, pending_total } }` |
 | Detail | `GET /pengajuan-pengelola/:id` | `{ data: akun }` |
 | Setujui | `POST /pengajuan-pengelola/:id/setujui` | `{}` → `{ data: akun }` |
 | Tolak | `POST /pengajuan-pengelola/:id/tolak` | `{ alasan_penolakan }`, trim 1–1.000 karakter → `{ data: akun }` |
@@ -59,7 +59,9 @@ Root loader menyelesaikan pemeriksaan sesi sebelum konten ditampilkan. Kunjungan
 
 Router menjadi satu pemilik daftar/detail. Tidak ada pengambilan data halaman melalui effect atau thunk tambahan. Pergantian pilihan membatalkan request sebelumnya. AbortSignal dan generasi sesi mencegah respons terlambat setelah logout mengisi data kembali. Tombol keputusan memerlukan detail target yang valid dan pending. Guard submit pada komponen dan action mencegah POST ganda; target ditangkap saat submit.
 
-Sesudah action, revalidasi otomatis router mengambil ulang daftar dan status target. Tidak ada pemanggilan revalidasi tambahan setelah action. Pilihan dihapus ketika target keluar dari daftar pending. Jika halaman terakhir kosong, loader mengambil halaman terakhir yang masih valid berdasarkan metadata backend. Query URL adalah permintaan halaman; metadata respons menentukan halaman aktif yang ditampilkan.
+Daftar menampilkan status menunggu, disetujui, dan ditolak, dengan pengajuan pending diurutkan lebih dahulu. `pending_total` menghitung seluruh pengajuan menunggu, termasuk yang berada di halaman lain. Klik jumlah menunggu untuk memuat ulang daftar. Nomor pada panel detail mengikuti nomor baris; ID backend tetap digunakan untuk request.
+
+Sesudah action, revalidasi otomatis router mengambil ulang daftar dan status target. Tidak ada pemanggilan revalidasi tambahan setelah action. Akun yang sudah diputuskan tetap muncul dengan status terbaru dan tombol keputusan nonaktif; pilihan tetap ada jika target masih berada di halaman yang sama. Jika halaman terakhir kosong, loader mengambil halaman terakhir yang masih valid berdasarkan metadata backend. Query URL adalah permintaan halaman; metadata respons menentukan halaman aktif yang ditampilkan.
 
 401 menghapus sesi sesuai pola proyek; 403 melepas halaman beserta data privat dan menyembunyikan menu. 404, 409, validasi, dan gangguan server mempunyai pesan tersendiri. Jika respons POST hilang/5xx, hasil disebut belum diketahui, tidak diklaim gagal dan tidak dikirim ulang otomatis. GET saat revalidasi memverifikasi status; jika GET juga gagal, keputusan tetap diblokir sampai retry GET berhasil. 409 memuat ulang keadaan tanpa menimpa keputusan ketua lain.
 
@@ -81,7 +83,7 @@ Pengujian runtime produksi/Neon dan kesesuaian dengan frame mobile yang belum di
 2. Daftar akun baru melalui `/register`, pilih Pengelola. Catat email/password. Login sebelum persetujuan harus ditolak sebagai pending.
 3. Pada browser/profil terpisah, login sebagai ketua uji dan buka **Kelola Akun Pengelola**. Pastikan identitas header tetap ketua.
 4. Pilih baris akun uji dengan klik atau Tab lalu Enter. Cocokkan nama/email/detail. Klik **Setujui** satu kali dan tunggu pesan berhasil.
-5. Akun hilang dari antrean pending; jumlah/pagination berubah. Periksa akun target melalui API: status active, is_ketua false, diperiksa_oleh ketua, diputuskan_pada terisi.
+5. Akun tetap berada di daftar dengan status Disetujui; jumlah menunggu berkurang dan tombol keputusan nonaktif. Periksa akun target melalui API: status active, is_ketua false, diperiksa_oleh ketua, diputuskan_pada terisi.
 6. Di browser pertama, login dengan email/password pendaftaran semula. Akun masuk sebagai pengelola biasa dan tidak mempunyai menu Kelola Akun; akses langsung URL mendapat 403. Browser ketua tetap login sebagai ketua.
 7. Daftar akun uji kedua. Pilih **Tolak**, isi alasan, kirim. Periksa status ditolak dan alasan tersimpan; akun tersebut tidak dapat login.
 8. Refresh URL ketua, periksa Ringkasan, lalu logout. URL privat harus kembali ke login. Uji juga lebar desktop/mobile, halaman kosong, retry jaringan, dan dua ketua memutuskan target sama (keputusan kedua mendapat 409).

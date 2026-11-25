@@ -96,6 +96,16 @@ test('Persetujuan pengelola, bootstrap, migration, dan otorisasi terbaru di Post
       await api(`/pengajuan-pengelola/${rejected.id}/tolak`, { method: 'POST', token: tokens[0], body: { alasan_penolakan: ' ' }, expected: 400 });
       const no = await decide(rejected.id, 'tolak', tokens[1]);
       assert.equal(no.data.status_akun, 'ditolak'); assert.equal(no.data.alasan_penolakan, 'Dokumen belum sesuai.');
+      const all = await api('/pengajuan-pengelola?status=all&limit=100', { token: tokens[0] });
+      assert.ok(all.data.some(account => account.id === approved.id && account.status_akun === 'active'));
+      assert.ok(all.data.some(account => account.id === rejected.id && account.status_akun === 'ditolak'));
+      assert.ok(all.data.every(account => account.peran === 'pengelola' && !account.is_ketua));
+      assert.equal(all.meta.pending_total, all.data.filter(account => account.status_akun === 'pending').length);
+      assert.equal(all.data[0].status_akun, 'pending');
+      const paged = await api('/pengajuan-pengelola?status=all&limit=1&page=2', { token: tokens[0] });
+      assert.equal(paged.meta.pending_total, all.meta.pending_total);
+      assert.equal(paged.meta.total, all.meta.total);
+      assert.equal(paged.data.length, 1);
       assert.equal((await login(rejected, 403)).error.code, 'ACCOUNT_REJECTED');
       assert.equal((await login(rejected, 401, 'Sandi-Salah-123')).error.code, 'LOGIN_GAGAL');
       assert.equal((await api('/pengajuan-pengelola?status=ditolak', { token: tokens[1] })).data.some(a => a.id === rejected.id), true);
