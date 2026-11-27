@@ -125,10 +125,23 @@ test('Alur HTTP dan transaksi PostgreSQL pada schema terisolasi', { timeout: 600
     assert.equal((await api('/nasabah?search=Nasabah%20Uji', { token: tokenM })).meta.total, 2);
   });
   await t.test('Tiga layanan dapat dijadwalkan, diubah, dan ditutup tanpa menghilang', async () => {
-    const make = layanan_kode => api('/jadwal', { method: 'POST', token: tokenM, body: { layanan_kode, tanggal: today, jam_mulai: '08:00', jam_selesai: '12:00' }, expected: 201 });
-    regularSchedule = (await make('setoran_umum')).data;
+    const make = (layanan_kode, token = tokenM) => api('/jadwal', { method: 'POST', token, body: { layanan_kode, tanggal: today, jam_mulai: '08:00', jam_selesai: '12:00' }, expected: 201 });
+    regularSchedule = (await make('setoran_umum', chairToken)).data;
     pickupSchedule = (await make('penjemputan')).data;
     const weighing = (await make('penimbangan')).data;
+    const detail = (await api(`/jadwal/${weighing.id}`)).data;
+    assert.equal(detail.id, weighing.id);
+    assert.equal(detail.nama_layanan, 'Penimbangan');
+    assert.equal(detail.tanggal, today);
+    assert.equal(detail.jam_mulai.slice(0, 5), '08:00');
+    assert.equal('pengelola_id' in detail, false);
+    assert.equal((await api(`/jadwal/${weighing.id}`, { token: tokenA })).data.id, weighing.id);
+    await api('/jadwal/9223372036854775807', { expected: 404 });
+    await api('/jadwal/bukan-id', { expected: 400 });
+    await api(`/jadwal/${weighing.id}`, { method: 'PATCH', token: tokenA, body: { tersedia: false }, expected: 403 });
+    await api(`/jadwal/${weighing.id}`, { method: 'PATCH', body: { tersedia: false }, expected: 401 });
+    await api(`/jadwal/${weighing.id}`, { method: 'PATCH', token: chairToken, body: { tersedia: false } });
+    await api(`/jadwal/${weighing.id}`, { method: 'PATCH', token: chairToken, body: { tersedia: true } });
     await api(`/jadwal/${weighing.id}`, { method: 'PATCH', token: tokenM, body: { jam_mulai: '13:00', jam_selesai: '14:30' } });
     const closed = await api(`/jadwal/${weighing.id}`, { method: 'PATCH', token: tokenM, body: { tersedia: false } });
     assert.equal(closed.data.status, 'tutup');
@@ -137,6 +150,8 @@ test('Alur HTTP dan transaksi PostgreSQL pada schema terisolasi', { timeout: 600
     assert.equal(publicRows.find(row => row.id === weighing.id).status, 'tutup');
     await api('/jadwal', { method: 'POST', token: tokenA, body: {}, expected: 403 });
     await api(`/jadwal/${weighing.id}`, { method: 'PATCH', token: tokenM, body: { tersedia: true, jam_mulai: null, jam_selesai: null }, expected: 400 });
+    await api('/jadwal', { method: 'POST', token: chairToken, body: { layanan_kode: 'lain', tanggal: today, jam_mulai: '08:00', jam_selesai: '12:00' }, expected: 400 });
+    await api('/jadwal', { method: 'POST', token: chairToken, body: { layanan_kode: 'penimbangan', tanggal: today, jam_mulai: '12:00', jam_selesai: '08:00' }, expected: 400 });
   });
   await t.test('Setoran multijenis menghitung harga, pembulatan Rupiah, dan saldo langsung', async () => {
     direct = (await save(depositBody([{ jenis_sampah_id: 1, berat_kg: '1.125' }, { jenis_sampah_id: 3, berat_kg: '2.5' }]))).data;

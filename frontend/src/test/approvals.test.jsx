@@ -58,7 +58,7 @@ async function select(account = target) {
 describe('Kelola Akun Pengelola', () => {
   it('loads the list while refreshing permission, but waits for authorization before rendering', async () => {
     const profile = deferred(); let refreshing = false
-    const { router, get } = mount({ path: '/pengelola/kelola-jadwal', getHandler: async url => refreshing && url === '/auth/me' ? await profile.promise : undefined })
+    const { router, get } = mount({ path: '/pengelola/catatan-setoran', getHandler: async url => refreshing && url === '/auth/me' ? await profile.promise : undefined })
     await screen.findByText('Halaman ini sedang dalam pengembangan.')
     refreshing = true
     let navigation
@@ -93,7 +93,7 @@ describe('Kelola Akun Pengelola', () => {
     expect(get).not.toHaveBeenCalled()
   })
   it('refreshes backend permission when entering from an initialized session', async () => {
-    const { state, router } = mount({ path: '/pengelola/kelola-jadwal' })
+    const { state, router } = mount({ path: '/pengelola/catatan-setoran' })
     await screen.findByText('Halaman ini sedang dalam pengembangan.')
     state.user = { ...manager, is_ketua: false }
     await act(async () => { await router.navigate('/pengelola/persetujuan-akun') })

@@ -18,11 +18,14 @@ import KelolaAkunPage from '../pages/pengelola/KelolaAkunPage'
 import { createApprovalRoutes } from './approvals'
 import { createHistoryRoutes } from './history'
 import RiwayatNasabahPage from '../pages/pengelola/RiwayatNasabahPage'
+import KelolaJadwalPage from '../pages/pengelola/KelolaJadwalPage'
+import { createScheduleRoutes } from './schedules'
 
 export function createAppRoutes(store) {
   const loaders = createSessionLoaders(store)
   const approvals = createApprovalRoutes(store, loaders)
   const history = createHistoryRoutes(store, loaders)
+  const schedules = createScheduleRoutes(store, loaders)
   return [{
     element: <RootLayout />, loader: loaders.bootstrap, HydrateFallback: InitialFallback, errorElement: <RouteError />,
     children: [
@@ -33,8 +36,12 @@ export function createAppRoutes(store) {
         { index: true, element: <Navigate to="ringkasan" replace /> },
         { path: 'ringkasan', loader: loaders.summary, element: <RingkasanPage />, errorElement: <RouteError /> },
         { path: 'riwayat-nasabah', loader: history.loader, element: <RiwayatNasabahPage />, errorElement: <RouteError /> },
+        ...['kelola-jadwal', 'kelola-jadwal/tambah', 'kelola-jadwal/:id/edit'].map((path, index) => ({
+          path, loader: schedules.loader, action: schedules.action, element: <KelolaJadwalPage form={index > 0} />, errorElement: <RouteError />,
+        })),
+        { path: 'kelola-jadwal/pengajuan-penjemputan', loader: loaders.manager, element: <PlaceholderPage title="Pengajuan Penjemputan" />, errorElement: <RouteError /> },
         { path: 'persetujuan-akun', loader: approvals.loader, action: approvals.action, element: <ChairGuard><KelolaAkunPage /></ChairGuard>, errorElement: <RouteError /> },
-        ...managerMenu.filter(item => !['ringkasan', 'riwayat-nasabah'].includes(item.path) && !item.chairOnly).map(item => ({
+        ...managerMenu.filter(item => !['ringkasan', 'riwayat-nasabah', 'kelola-jadwal'].includes(item.path) && !item.chairOnly).map(item => ({
           path: item.path, loader: loaders.manager,
           element: <PlaceholderPage title={item.title || item.label} />, errorElement: <RouteError />,
         })),

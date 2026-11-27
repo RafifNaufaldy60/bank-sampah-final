@@ -12,14 +12,14 @@ export function PengelolaNavigation({ user, onNavigate }) {
   const denied = useSelector(state => state.auth.chairAccessDenied)
   return <nav aria-label="Menu pengelola"><p className="nav-caption">MENU UTAMA</p>
     {menuFor(user).filter(item => !item.chairOnly || !denied).map(item => <NavLink key={item.path} to={`/pengelola/${item.path}`} onClick={onNavigate} className={({ isActive }) => `dashboard-nav-link${isActive ? ' active' : ''}${item.chairOnly ? ' chair-menu' : ''}`}>
-      <span className="nav-icon"><img src={dashboardAsset(item.chairOnly ? 'approval-chair' : item.icon)} alt="" /></span><span>{item.label}</span>
+      {({ isActive }) => <><span className="nav-icon"><img src={isActive ? item.activeIcon : item.icon} alt="" /></span><span>{item.label}</span></>}
     </NavLink>)}
   </nav>
 }
 export function DashboardHeader({ user, title, onOpen, menuButton, mobileOpen, onLogout, logoutStatus }) {
   return <header className="dashboard-header">
     <button ref={menuButton} className="dashboard-button mobile-menu-toggle" aria-label="Buka menu navigasi" aria-controls="mobile-navigation" aria-expanded={mobileOpen} onClick={onOpen}>☰</button>
-    <div className="dashboard-title"><h1>{title}</h1><p>{title === 'Ringkasan Dashboard' ? 'Pantau aktivitas Bank Sampah Rahayu hari ini.' : title === 'Riwayat Nasabah' ? 'Pantau setiap transaksi yang tercatat dalam sistem.' : title === 'Kelola Akun Pengelola' ? 'Tinjau dan kelola data akun pengelola bank sampah yang telah terdaftar.' : 'Bank Sampah Rahayu Lestari'}</p></div>
+    <div className="dashboard-title"><h1>{title}</h1><p>{title === 'Ringkasan Dashboard' ? 'Pantau aktivitas Bank Sampah Rahayu hari ini.' : title === 'Kelola Jadwal' ? 'Atur ketersediaan layanan untuk nasabah.' : title === 'Riwayat Nasabah' ? 'Pantau setiap transaksi yang tercatat dalam sistem.' : title === 'Kelola Akun Pengelola' ? 'Tinjau dan kelola data akun pengelola bank sampah yang telah terdaftar.' : 'Bank Sampah Rahayu Lestari'}</p></div>
     <details className="dashboard-profile"><summary><span className="profile-avatar" aria-hidden="true">{initials(user.nama)}</span><span className="profile-copy"><strong>{user.nama}</strong><span>PENGELOLA BANK SAMPAH DESA</span></span><img src={dashboardAsset('chevron')} alt="" /></summary>
       <div className="profile-details"><p>{user.nama}</p><p>{user.email}</p><Link to="/akun">Informasi akun</Link><button className="profile-logout dashboard-button" onClick={onLogout} disabled={logoutStatus === 'loading'}>{logoutStatus === 'loading' ? 'Sedang keluar…' : 'Keluar akun'}</button></div>
     </details>
@@ -42,7 +42,7 @@ export default function PengelolaLayout() {
   const { user, logoutStatus, logoutError } = auth
   if (!user) return <Navigate to="/login" replace />
   if (!isActiveManager(user)) return <ForbiddenPage />
-  const item = managerMenu.find(entry => location.pathname === `/pengelola/${entry.path}`)
+  const item = managerMenu.find(entry => location.pathname === `/pengelola/${entry.path}` || location.pathname.startsWith(`/pengelola/${entry.path}/`))
   const title = item?.path === 'ringkasan' ? 'Ringkasan Dashboard' : item?.title || item?.label || 'Dashboard Pengelola'
   const approvalPage = item?.path === 'persetujuan-akun' && user.is_ketua === true && !auth.chairAccessDenied
   const pending = navigation.state !== 'idle' || revalidator.state !== 'idle'

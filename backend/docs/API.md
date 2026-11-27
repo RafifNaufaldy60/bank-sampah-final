@@ -53,6 +53,7 @@ Tanggal: `YYYY-MM-DD`, jam WIB `HH:mm` saat input (output `HH:mm:ss`), waktu aud
 | POST | `/harga-sampah` | Pengelola | jenis_sampah_id, berlaku_mulai, harga_per_kg | Persiapan tarif, termasuk Minyak Jelantah |
 | GET | `/layanan` | Publik | — | Dua kartu pada Jadwal Layanan |
 | GET | `/jadwal` | Publik | dari?, sampai?, layanan_kode?, status?, page?, limit? | Jadwal Layanan; Kelola Jadwal |
+| GET | `/jadwal/:id` | Publik | ID jadwal | Detail untuk edit langsung/refresh |
 | POST | `/jadwal` | Pengelola | layanan_kode, tanggal, jam_mulai, jam_selesai, tersedia?, catatan? | Kelola Jadwal: tambah |
 | PATCH | `/jadwal/:id` | Pengelola | id; subset kolom jadwal | Kelola Jadwal: ubah/tutup |
 | GET | `/nasabah` | Pengelola | search?, page?, limit? | Catatan Setoran: pilih nasabah aktif |
@@ -254,6 +255,14 @@ Response 200 mempunyai bentuk yang sama dengan response pembuatan, dengan `terse
 ```
 
 Tanpa `dari`/`sampai` memakai minggu berjalan Senin–Minggu. Salah satu batas boleh digunakan sendiri. Filter opsional `status=tersedia|tutup`; tanpa filter keduanya tampil. Slot yang tidak dibuat tidak menghasilkan baris jadwal.
+
+`GET /jadwal/:id` → 200 `{ "data": { ... } }`, dengan field yang sama seperti satu baris daftar: `id`, `layanan_kode`, `nama_layanan`, `tanggal`, `jam_mulai`, `jam_selesai`, `tersedia`, `catatan`, `status`. ID jadwal berupa string BIGINT, berbeda dari kode master layanan. ID tidak valid menghasilkan 400; ID yang tidak ditemukan 404 `TIDAK_DITEMUKAN`. Endpoint baca tetap publik, termasuk jadwal tutup; tidak mengembalikan identitas internal pengelola. POST/PATCH tetap memerlukan pengelola aktif, baik ketua maupun bukan ketua.
+
+Form pengelola mengambil dropdown dari `GET /layanan`, mengirim `layanan_kode` (bukan nama), `tanggal` sebagai DATE `YYYY-MM-DD`, serta `jam_mulai`/`jam_selesai` sebagai waktu lokal WIB `HH:mm`. Tidak ada konversi UTC. Status `tersedia`/`tutup` hanya mengikuti boolean, bukan tanggal sudah lewat. Backend tidak melarang jadwal lampau atau tumpang tindih antarlayanan; rentang jam wajib selesai setelah mulai pada hari yang sama. PATCH status hanya mengubah `tersedia` dan mempertahankan pengajuan terkait. Tidak ada endpoint hapus atau perubahan schema untuk halaman ini.
+
+POST jadwal belum memiliki kontrak Idempotency-Key. UI mencegah submit bersamaan dan menahan retry jika hasil jaringan tidak pasti; periksa daftar sebelum membuat ulang. Proteksi ini bukan deduplikasi lintas tab/perangkat.
+
+Pengajuan penjemputan baru hanya menyimpan `tanggal_diminta`, belum memilih ID jadwal. Ketersediaan jadwal diperiksa ketika `/pengajuan-penjemputan/:id/setujui` mengaitkan jadwal; jadwal tutup atau lampau ditolak. Halaman Kelola Jadwal mempertahankan kontrak ini dan tidak otomatis membatalkan/memindahkan pengajuan.
 
 ## Mencatat setoran dan rincian
 

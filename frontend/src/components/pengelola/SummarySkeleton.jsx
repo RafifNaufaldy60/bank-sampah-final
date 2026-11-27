@@ -10,6 +10,7 @@ export default function SummarySkeleton() {
 }
 export function InitialFallback() {
   const location = useLocation()
+  if (location.pathname.startsWith('/pengelola/kelola-jadwal')) return <main className="dashboard-initial" role="status" aria-label="Memuat Kelola Jadwal"><p>Memuat jadwal layanan…</p><div className="skeleton list-skeleton" /></main>
   if (location.pathname === '/pengelola/riwayat-nasabah') return <main className="dashboard-initial" role="status" aria-label="Memuat Riwayat Nasabah"><p>Memuat riwayat setoran nasabah…</p><div className="skeleton list-skeleton" /></main>
   if (location.pathname === '/pengelola/persetujuan-akun') return <main className="dashboard-initial" role="status" aria-label="Memuat Kelola Akun Pengelola">
     <p>Memeriksa sesi dan memuat pengajuan akun pengelola…</p>

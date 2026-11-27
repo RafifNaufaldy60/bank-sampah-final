@@ -65,7 +65,7 @@ function HistoryContent({ result }) {
       if (failure.response?.status === 401) { session.clear(); dispatch(sessionInvalidated()); navigate('/login', { replace: true }); return }
       if (failure.response?.status === 403) { navigate('/akun', { replace: true }); return }
       setError(normalizeError(failure).message)
-    } finally { unsubscribe(); download.current = null; if (!controller.signal.aborted) setDownloading(false) }
+    } finally { unsubscribe(); download.current = null; setDownloading(false) }
   }
   const { data, meta } = result
   const pages = Array.from({ length: Math.min(3, meta.total_pages) }, (_, i) => Math.max(1, Math.min(meta.page - 1, meta.total_pages - 2)) + i)
