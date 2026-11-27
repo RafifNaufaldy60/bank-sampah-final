@@ -1,0 +1,30 @@
+$kind: http-request
+description: Detail publik jadwal tersimpan, termasuk status tutup. Jalankan setelah request 17 pada database pengujian.
+url: "{{base_url}}/jadwal/{{jadwal_setoran_id}}"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: noauth
+scripts:
+  - type: beforeRequest
+    code: |-
+      if (!pm.environment.get('jadwal_setoran_id')) {
+        pm.execution.skipRequest(); throw new Error('Jalankan pembuatan jadwal uji terlebih dahulu.');
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 200', () => pm.response.to.have.status(200));
+      if (pm.response.code === 200) {
+        const data = pm.response.json().data;
+        pm.test('Detail tepat dan tetap tersimpan setelah ditutup', () => {
+          pm.expect(data.id).to.eql(pm.environment.get('jadwal_setoran_id'));
+          pm.expect(data.layanan_kode).to.eql('setoran_umum');
+          pm.expect(data.tersedia).to.eql(false);
+          pm.expect(data.status).to.eql('tutup');
+          pm.expect(data.nama_layanan).to.be.a('string');
+        });
+      }
+    language: text/javascript
+order: 2500

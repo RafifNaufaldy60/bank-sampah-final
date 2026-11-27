@@ -47,7 +47,7 @@ describe('shared pengelola dashboard', () => {
   it('all placeholders share the layout, activate their menu and make no feature requests', async () => {
     const { get, router } = mount()
     await ready()
-    for (const [label, title, path] of [['Catat Setoran', 'Catatan Setoran', 'catatan-setoran'], ['Kelola Jadwal', 'Kelola Jadwal', 'kelola-jadwal'], ['Riwayat Nasabah', 'Riwayat Nasabah', 'riwayat-nasabah']]) {
+    for (const [label, title, path] of [['Catat Setoran', 'Catatan Setoran', 'catatan-setoran']]) {
       fireEvent.click(within(screen.getByRole('navigation')).getByRole('link', { name: label }))
       expect(await screen.findByRole('heading', { name: title, level: 2 })).toBeInTheDocument()
       expect(screen.getByText('Halaman ini sedang dalam pengembangan.')).toBeInTheDocument()
@@ -166,11 +166,11 @@ describe('shared pengelola dashboard', () => {
     await screen.findByRole('heading', { name: 'Catatan Setoran', level: 2 })
     fireEvent.click(screen.getByRole('link', { name: 'Ringkasan' }))
     await waitFor(() => expect(signal).toBeDefined())
-    await act(async () => { await router.navigate('/pengelola/kelola-jadwal') })
+    await act(async () => { await router.navigate('/pengelola/catatan-setoran') })
     expect(signal.aborted).toBe(true)
     await act(async () => pending.reject({ code: 'ERR_CANCELED' }))
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Kelola Jadwal', level: 2 })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Catatan Setoran', level: 2 })).toBeInTheDocument()
   })
   it('mobile navigation opens, closes and returns keyboard focus', async () => {
     mount(); await ready()

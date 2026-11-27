@@ -12,16 +12,16 @@ export function PengelolaNavigation({ user, onNavigate }) {
   const denied = useSelector(state => state.auth.chairAccessDenied)
   return <nav aria-label="Menu pengelola"><p className="nav-caption">MENU UTAMA</p>
     {menuFor(user).filter(item => !item.chairOnly || !denied).map(item => <NavLink key={item.path} to={`/pengelola/${item.path}`} onClick={onNavigate} className={({ isActive }) => `dashboard-nav-link${isActive ? ' active' : ''}${item.chairOnly ? ' chair-menu' : ''}`}>
-      <span className="nav-icon"><img src={dashboardAsset(item.icon)} alt="" /></span><span>{item.label}</span>
+      {({ isActive }) => <><span className="nav-icon"><img src={isActive ? item.activeIcon : item.icon} alt="" /></span><span>{item.label}</span></>}
     </NavLink>)}
   </nav>
 }
-export function DashboardHeader({ user, title, onOpen, menuButton, mobileOpen }) {
+export function DashboardHeader({ user, title, onOpen, menuButton, mobileOpen, onLogout, logoutStatus }) {
   return <header className="dashboard-header">
     <button ref={menuButton} className="dashboard-button mobile-menu-toggle" aria-label="Buka menu navigasi" aria-controls="mobile-navigation" aria-expanded={mobileOpen} onClick={onOpen}>☰</button>
-    <div className="dashboard-title"><h1>{title}</h1><p>{title === 'Ringkasan Dashboard' ? 'Pantau aktivitas Bank Sampah Rahayu hari ini.' : title === 'Kelola Akun Pengelola' ? 'Tinjau dan kelola data akun pengelola bank sampah yang telah terdaftar.' : 'Bank Sampah Rahayu Lestari'}</p></div>
+    <div className="dashboard-title"><h1>{title}</h1><p>{title === 'Ringkasan Dashboard' ? 'Pantau aktivitas Bank Sampah Rahayu hari ini.' : title === 'Kelola Jadwal' ? 'Atur ketersediaan layanan untuk nasabah.' : title === 'Riwayat Nasabah' ? 'Pantau setiap transaksi yang tercatat dalam sistem.' : title === 'Kelola Akun Pengelola' ? 'Tinjau dan kelola data akun pengelola bank sampah yang telah terdaftar.' : 'Bank Sampah Rahayu Lestari'}</p></div>
     <details className="dashboard-profile"><summary><span className="profile-avatar" aria-hidden="true">{initials(user.nama)}</span><span className="profile-copy"><strong>{user.nama}</strong><span>PENGELOLA BANK SAMPAH DESA</span></span><img src={dashboardAsset('chevron')} alt="" /></summary>
-      <div className="profile-details"><p>{user.nama}</p><p>{user.email}</p><Link to="/akun">Informasi akun</Link></div>
+      <div className="profile-details"><p>{user.nama}</p><p>{user.email}</p><Link to="/akun">Informasi akun</Link><button className="profile-logout dashboard-button" onClick={onLogout} disabled={logoutStatus === 'loading'}>{logoutStatus === 'loading' ? 'Sedang keluar…' : 'Keluar akun'}</button></div>
     </details>
   </header>
 }
@@ -42,23 +42,23 @@ export default function PengelolaLayout() {
   const { user, logoutStatus, logoutError } = auth
   if (!user) return <Navigate to="/login" replace />
   if (!isActiveManager(user)) return <ForbiddenPage />
-  const item = managerMenu.find(entry => location.pathname === `/pengelola/${entry.path}`)
+  const item = managerMenu.find(entry => location.pathname === `/pengelola/${entry.path}` || location.pathname.startsWith(`/pengelola/${entry.path}/`))
   const title = item?.path === 'ringkasan' ? 'Ringkasan Dashboard' : item?.title || item?.label || 'Dashboard Pengelola'
+  const approvalPage = item?.path === 'persetujuan-akun' && user.is_ketua === true && !auth.chairAccessDenied
   const pending = navigation.state !== 'idle' || revalidator.state !== 'idle'
   async function signOut() { closeMenu(); await dispatch(logout()) }
   const sidebar = <>
     <Link className="dashboard-brand" to="/pengelola/ringkasan" aria-label="Rahayu Lestari — Ringkasan" onClick={closeMenu}><img src={dashboardAsset('logo')} alt="" /><span><strong>Rahayu<span>Lestari</span></strong><small>BANK SAMPAH DESA</small></span></Link>
     <PengelolaNavigation user={user} onNavigate={closeMenu} />
-    <button className="dashboard-logout" onClick={signOut} disabled={logoutStatus === 'loading'}><span className="nav-icon"><img src={dashboardAsset('logout')} alt="" /></span>{logoutStatus === 'loading' ? 'Sedang keluar…' : 'Keluar akun'}</button>
   </>
-  return <div className="pengelola-layout">
+  return <div className={`pengelola-layout${approvalPage ? ' pengelola-approval-layout' : ''}`}>
     <a className="dashboard-skip" href="#dashboard-content">Lewati ke konten</a>
     <aside className="dashboard-sidebar">{sidebar}</aside>
     <dialog ref={dialog} id="mobile-navigation" className="dashboard-mobile-nav" aria-label="Navigasi pengelola" onClose={() => setMobileOpen(false)} onCancel={closeMenu}>
       {mobileOpen && <><button className="mobile-close" aria-label="Tutup menu navigasi" onClick={closeMenu}>×</button>{sidebar}</>}
     </dialog>
     <div className="dashboard-main">
-      <DashboardHeader user={user} title={title} menuButton={menuButton} mobileOpen={mobileOpen} onOpen={() => setMobileOpen(true)} />
+      <DashboardHeader user={user} title={title} menuButton={menuButton} mobileOpen={mobileOpen} onOpen={() => setMobileOpen(true)} onLogout={signOut} logoutStatus={logoutStatus} />
       {pending && <div role="status" className="dashboard-pending">Memuat halaman…</div>}
       <main id="dashboard-content" className="dashboard-content" tabIndex={-1} aria-busy={pending || logoutStatus === 'loading'}>
         {logoutError && <p role="alert" className="auth-error">{logoutError.message}</p>}

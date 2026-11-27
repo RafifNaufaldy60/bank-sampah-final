@@ -21,6 +21,12 @@ const present = row => ({ ...row, status: row.tersedia ? 'tersedia' : 'tutup' })
 
 export function scheduleController(db) {
   return {
+    detail: async (req, res) => {
+      const { rows } = await db.query(`SELECT j.id,j.layanan_kode,l.nama AS nama_layanan,j.tanggal,j.jam_mulai,j.jam_selesai,j.tersedia,j.catatan
+        FROM jadwal_layanan j JOIN layanan l ON l.kode=j.layanan_kode WHERE j.id=$1`, [v.id(req.params.id)]);
+      ensure(rows[0], 404, 'TIDAK_DITEMUKAN', 'Jadwal tidak ditemukan.');
+      res.json({ data: present(rows[0]) });
+    },
     list: async (req, res) => {
       v.fields(req.query, ['dari', 'sampai', 'layanan_kode', 'status', 'page', 'limit']);
       const range = req.query.dari === undefined && req.query.sampai === undefined ? weekRange() : dateRange(req.query);

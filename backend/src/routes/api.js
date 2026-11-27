@@ -42,6 +42,7 @@ export function apiRoutes(db, config) {
   router.post('/harga-sampah', loggedIn, manager, catalog.addPrice);
   router.get('/layanan', catalog.services);
   router.get('/jadwal', schedule.list);
+  router.get('/jadwal/:id', schedule.detail);
   router.post('/jadwal', loggedIn, manager, schedule.create);
   router.patch('/jadwal/:id', loggedIn, manager, schedule.update);
   router.get('/nasabah', loggedIn, manager, catalog.customers);

@@ -26,8 +26,8 @@ function mount({ user = manager, accounts = [target, second], path = '/pengelola
     if (url.includes('?status=')) {
       const params = new URL(url, 'http://test').searchParams
       const page = Number(params.get('page')), limit = Number(params.get('limit'))
-      const rows = state.accounts.filter(a => a.status_akun === params.get('status'))
-      return { data: { data: rows.slice((page - 1) * limit, page * limit), meta: { page, limit, total: rows.length, total_pages: Math.ceil(rows.length / limit) } } }
+      const rows = state.accounts.filter(a => params.get('status') === 'all' || a.status_akun === params.get('status'))
+      return { data: { data: rows.slice((page - 1) * limit, page * limit), meta: { page, limit, total: rows.length, total_pages: Math.ceil(rows.length / limit), pending_total: rows.filter(a => a.status_akun === 'pending').length } } }
     }
     const account = state.accounts.find(a => url.endsWith(`/${a.id}`))
     if (!account) throw failure(404)
@@ -56,17 +56,30 @@ async function select(account = target) {
 }
 
 describe('Kelola Akun Pengelola', () => {
-  it('loads pending from the backend once, waits for session, and disables decisions without selection', async () => {
+  it('loads the list while refreshing permission, but waits for authorization before rendering', async () => {
+    const profile = deferred(); let refreshing = false
+    const { router, get } = mount({ path: '/pengelola/catatan-setoran', getHandler: async url => refreshing && url === '/auth/me' ? await profile.promise : undefined })
+    await screen.findByText('Halaman ini sedang dalam pengembangan.')
+    refreshing = true
+    let navigation
+    act(() => { navigation = router.navigate('/pengelola/persetujuan-akun') })
+    await waitFor(() => expect(get.mock.calls.some(([url]) => url.startsWith('/pengajuan-pengelola?'))).toBe(true))
+    expect(screen.queryByRole('table')).not.toBeInTheDocument()
+    await act(async () => { profile.resolve(response(manager)); await navigation })
+    await ready()
+  })
+  it('loads all statuses once, counts only pending accounts, waits for session, and disables decisions without selection', async () => {
     const pending = deferred()
     const { get } = mount({ accounts: [target, { ...second, status_akun: 'active' }], getHandler: async url => url === '/auth/me' ? await pending.promise : undefined })
     expect(screen.queryByRole('table')).not.toBeInTheDocument()
     expect(screen.getByRole('status', { name: 'Memuat Kelola Akun Pengelola' })).toBeInTheDocument()
     await act(async () => pending.resolve(response(manager)))
     await ready()
-    expect(screen.queryByText(second.email)).not.toBeInTheDocument()
+    expect(screen.getByText(second.email)).toBeInTheDocument()
+    expect(screen.getByText('Disetujui')).toBeInTheDocument()
     expect(screen.getByText('1 menunggu konfirmasi')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Setujui' })).toBeDisabled()
-    expect(get.mock.calls.map(c => c[0])).toEqual(['/auth/me', '/pengajuan-pengelola?status=pending&page=1&limit=20'])
+    expect(get.mock.calls.map(c => c[0])).toEqual(['/auth/me', '/pengajuan-pengelola?status=all&page=1&limit=20'])
   })
   it.each([{ is_ketua: false }, { peran: 'nasabah' }, { is_ketua: 'true' }, { status_akun: 'pending' }, { aktif: false }])('rejects direct access for %o', async flags => {
     const { get } = mount({ user: { ...manager, ...flags } })
@@ -80,7 +93,7 @@ describe('Kelola Akun Pengelola', () => {
     expect(get).not.toHaveBeenCalled()
   })
   it('refreshes backend permission when entering from an initialized session', async () => {
-    const { state, router } = mount({ path: '/pengelola/kelola-jadwal' })
+    const { state, router } = mount({ path: '/pengelola/catatan-setoran' })
     await screen.findByText('Halaman ini sedang dalam pengembangan.')
     state.user = { ...manager, is_ketua: false }
     await act(async () => { await router.navigate('/pengelola/persetujuan-akun') })
@@ -94,7 +107,7 @@ describe('Kelola Akun Pengelola', () => {
     await waitFor(() => expect(within(panel()).getByText(target.email)).toBeInTheDocument())
     expect(button).toHaveAttribute('aria-pressed', 'true')
     fireEvent.click(screen.getByText(second.email).closest('tr'))
-    await waitFor(() => expect(within(panel()).getByText(second.id)).toBeInTheDocument())
+    await waitFor(() => expect(within(panel()).getByTitle(`ID akun ${second.id}`)).toHaveTextContent('2'))
   })
   it('aborts a slow detail and ignores its late response after another row is selected', async () => {
     const pending = deferred(); let signal
@@ -122,7 +135,9 @@ describe('Kelola Akun Pengelola', () => {
     expect(post.mock.calls[0][1]).toEqual({})
     await act(async () => pending.resolve())
     await screen.findByText(/Persetujuan berhasil/)
-    await waitFor(() => expect(screen.queryByText(target.email)).not.toBeInTheDocument())
+    await waitFor(() => expect(within(panel()).getByText('Disetujui', { selector: 'dd' })).toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'Setujui' })).toBeDisabled()
+    expect(within(screen.getByRole('table')).getByText(target.email)).toBeInTheDocument()
     expect(state.accounts[0]).toMatchObject({ status_akun: 'active', is_ketua: false })
     expect(store.getState().auth.user.id).toBe(manager.id)
     expect(session.read().token).toBe('chair-fixture')
@@ -145,7 +160,8 @@ describe('Kelola Akun Pengelola', () => {
     const { post } = mount({ postHandler: async (_url, _body, _options, state) => { state.accounts[0].status_akun = 'ditolak'; throw failure(409) } })
     await ready(); await select(); fireEvent.click(screen.getByRole('button', { name: 'Setujui' }))
     await screen.findByText(/Pengajuan sudah berubah/)
-    await waitFor(() => expect(screen.queryByText(target.email)).not.toBeInTheDocument())
+    await waitFor(() => expect(within(panel()).getByText('Ditolak', { selector: 'dd' })).toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'Setujui' })).toBeDisabled()
     expect(post).toHaveBeenCalledTimes(1)
     expect(screen.queryByText(/Persetujuan berhasil/)).not.toBeInTheDocument()
   })
@@ -168,12 +184,14 @@ describe('Kelola Akun Pengelola', () => {
     await waitFor(() => expect(screen.getByRole('button', { name: 'Setujui' })).toBeEnabled())
     expect(post).toHaveBeenCalledTimes(1)
   })
-  it('moves to the previous page when the last row is decided', async () => {
+  it('retains decided accounts and selection on the current page', async () => {
     const accounts = Array.from({ length: 21 }, (_, i) => ({ ...target, id: String(100 + i), nama: `Pengelola ${i}`, email: `p${i}@example.test` }))
     mount({ accounts, path: '/pengelola/persetujuan-akun?page=2' }); await ready(); await select(accounts[20])
     fireEvent.click(screen.getByRole('button', { name: 'Setujui' }))
-    await screen.findByText('1–20 dari 20')
-    expect(screen.getByText('Pilih satu baris pengajuan untuk melihat detail akun.')).toBeInTheDocument()
+    await screen.findByText(/Persetujuan berhasil/)
+    expect(screen.getByText('21–21 dari 21')).toBeInTheDocument()
+    expect(within(panel()).getByText(accounts[20].email)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Setujui' })).toBeDisabled()
   })
   it('renders the required empty message', async () => {
     mount({ accounts: [] }); await ready()

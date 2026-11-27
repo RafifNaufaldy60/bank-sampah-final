@@ -18,8 +18,6 @@
 .dashboard-nav-link.chair-menu { font-size: 12px; }
 .nav-icon { display: inline-flex; flex: 0 0 20px; width: 20px; height: 20px; align-items: center; justify-content: center; }
 .nav-icon img { flex: none; }
-.dashboard-nav-link.active:not(:first-of-type) .nav-icon { background: #315f4d; border-radius: 4px; }
-.dashboard-nav-link:not(.active):first-of-type .nav-icon { background: #e5e4cc; border-radius: 4px; }
 .dashboard-logout { display: flex; align-items: center; gap: 8px; margin-top: auto; border: 0; background: transparent; color: inherit; padding: 12px; text-align: left; font: 500 14px/21px Poppins, sans-serif; border-radius: 10px; }
 .dashboard-logout:hover { background: #ffffff14; }
 .dashboard-main { flex: 1; min-width: 0; }
@@ -36,6 +34,7 @@
 .profile-details { position: absolute; z-index: 5; right: 0; top: calc(100% + 12px); background: white; border: 1px solid #e0e4da; padding: 18px; border-radius: 12px; box-shadow: 0 8px 24px #173f351a; min-width: 230px; max-width: 280px; overflow-wrap: anywhere; }
 .profile-details p, .profile-details a { display: block; margin: 0 0 10px; }
 .profile-details a { text-decoration: underline; }
+.profile-logout { width: 100%; margin-top: 6px; }
 .dashboard-content { padding: 30px 34px; }
 .ringkasan-page, .summary-skeleton { display: flex; flex-direction: column; gap: 24px; }
 .summary-welcome { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 28px 31px; min-height: 135px; background: #3f6357; color: #fcfcfa; border-radius: 20px; }

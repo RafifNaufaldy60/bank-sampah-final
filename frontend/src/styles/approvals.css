@@ -1,14 +1,16 @@
 .approval-page { display: flex; flex-direction: column; gap: 18px; }
-.approval-columns { display: grid; grid-template-columns: minmax(0, 2.12fr) minmax(300px, 1fr); gap: 24px; align-items: start; }
+.approval-columns { display: grid; grid-template-columns: minmax(0, 730fr) minmax(320px, 333fr); gap: 24px; align-items: start; }
 .approval-panel { background: #fff; border: 1px solid #dce3d9; border-radius: 16px; min-width: 0; }
 .approval-panel h2 { font: 600 20px/28px Poppins, sans-serif; color: #3f4f46; }
 .approval-list { padding: 22px; }
 .approval-list-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 44px; margin-bottom: 13px; }
-.approval-list-heading p { font: 400 12px/18px 'Open Sans', sans-serif; color: #6a5224; white-space: nowrap; }
+.approval-refresh-list { border: 0; background: transparent; padding: 0; font: 400 12px/18px 'Open Sans', sans-serif; color: #6a5224; white-space: nowrap; }
+.approval-refresh-list:hover:not(:disabled) { text-decoration: underline; }
 .approval-table-scroll { overflow-x: auto; border: 1px solid #dce3d9; border-radius: 12px; }
-.approval-table { width: 100%; border-collapse: collapse; text-align: left; font: 400 14px/20px 'Open Sans', sans-serif; }
+.approval-table { width: 100%; min-width: 680px; table-layout: fixed; border-collapse: collapse; text-align: left; font: 400 14px/20px 'Open Sans', sans-serif; }
+.approval-col-number { width: 10.5%; }.approval-col-status { width: 30.2%; }
 .approval-table th { height: 45px; background: #fcfcfa; color: #4f6357; font: 600 12px/18px Poppins, sans-serif; }
-.approval-table th, .approval-table td { padding: 12px 14px; overflow-wrap: anywhere; }
+.approval-table th, .approval-table td { padding: 12px 6px 12px 14px; overflow-wrap: anywhere; }
 .approval-table th:first-child, .approval-table td:first-child { min-width: 36px; white-space: nowrap; overflow-wrap: normal; }
 .approval-table td { height: 64px; border-top: 1px solid #dce3d9; }
 .approval-table td:nth-child(4) { min-width: 105px; }
@@ -17,6 +19,7 @@
 .approval-select { border: 0; padding: 0; background: transparent; color: inherit; text-align: left; font: inherit; min-width: 95px; overflow-wrap: anywhere; }
 .approval-badge { display: inline-flex; justify-content: center; align-items: center; min-height: 28px; padding: 4px 18px; border-radius: 999px; white-space: nowrap; font: 600 12px/18px Poppins, sans-serif; }
 .approval-badge-pending { color: #6a5224; background: #f5edd6; }.approval-badge-active { color: #345642; background: #e4eee2; }.approval-badge-ditolak { color: #783f37; background: #f6e5e1; }
+.approval-table .approval-badge { min-width: 106px; }.approval-table .approval-badge-ditolak { min-width: 92px; }
 .approval-detail { display: flex; flex-direction: column; gap: 14px; padding: 24px; font: 400 14px/20px 'Open Sans', sans-serif; }
 .approval-detail-status { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid #dce3d9; }
 .approval-detail-status > span:first-child { font: 600 14px/21px Poppins, sans-serif; color: #3f4f46; overflow-wrap: anywhere; min-width: 0; }
@@ -32,6 +35,16 @@
 .approval-notice { padding: 16px 20px; border: 1px solid #dce3d9; border-radius: 12px; background: #f5edd6; font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; }.approval-notice-success { color: #345642; background: #e4eee2; }.approval-notice-error { color: #783f37; background: #f6e5e1; }.approval-notice small { display: block; margin-top: 4px; }
 .approval-refresh { color: #546a5d; font-size: 12px; }
 .approval-rejection { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; border-top: 1px solid #dce3d9; }.approval-rejection p { overflow-wrap: anywhere; }.approval-rejection label { font: 600 12px/18px Poppins, sans-serif; }.approval-rejection textarea { box-sizing: border-box; width: 100%; border: 1px solid #698474; border-radius: 8px; padding: 12px; resize: vertical; color: #2f3b34; }.approval-rejection > div { display: flex; gap: 10px; flex-wrap: wrap; }.approval-rejection [role=alert] { color: #783f37; }
+.pengelola-approval-layout .dashboard-sidebar { width: 284.667px; padding-right: 24px; overflow-y: auto; }
+.pengelola-approval-layout .dashboard-sidebar > nav, .pengelola-approval-layout .dashboard-brand { flex-shrink: 0; }
+.pengelola-approval-layout .dashboard-nav-link.chair-menu { font-size: 14px; }
+.pengelola-approval-layout .dashboard-header { align-items: flex-start; }
+.pengelola-approval-layout .dashboard-profile { width: 353px; }
+.pengelola-approval-layout .dashboard-profile summary { gap: 16px; padding: 4px 6px 0 8px; }
+.pengelola-approval-layout .profile-copy { flex: 1; }
 @media (max-width: 1300px) { .approval-columns { grid-template-columns: minmax(0, 1fr) 300px; }.approval-list-heading { align-items: flex-start; flex-direction: column; }.approval-list { padding: 18px; }.approval-detail { padding: 20px; }.approval-panel h2 { font-size: 18px; } }
+@media (max-width: 1250px) { .pengelola-approval-layout .dashboard-profile { width: auto; } }
+@media (max-width: 1050px) { .pengelola-approval-layout .dashboard-sidebar { width: 248px; padding-right: 16px; }.pengelola-approval-layout .dashboard-nav-link.chair-menu { font-size: 12px; } }
 @media (max-width: 1100px) { .approval-columns { grid-template-columns: minmax(0, 1fr); }.approval-detail-placeholder { min-height: 60px; }.approval-list-heading { flex-direction: row; align-items: center; }.approval-detail { max-width: none; } }
 @media (max-width: 600px) { .approval-list-heading { flex-direction: column; align-items: flex-start; }.approval-table { min-width: 640px; }.approval-list { padding: 16px; }.approval-detail { padding: 20px; }.approval-panel h2 { font-size: 17px; line-height: 25px; }.approval-detail-status { flex-wrap: wrap; }.approval-panel button:disabled { cursor: default; } }
+@media (max-width: 760px) { .pengelola-approval-layout .dashboard-mobile-nav { overflow: hidden auto; isolation: isolate; }.pengelola-approval-layout .dashboard-header { align-items: center; }.pengelola-approval-layout .dashboard-profile summary { padding: 0; }.approval-decisions > button { max-width: calc(60% - 12px); } }

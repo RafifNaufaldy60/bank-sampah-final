@@ -25,7 +25,8 @@ export function createDatabase({ url = config.databaseUrl, schema = 'public' } =
   if (!/^(public|bs_test_[a-z0-9_]+)$/.test(schema)) throw new Error('Schema tidak diizinkan.');
   const pool = new pg.Pool({
     connectionString: connectionString(url), max: 10,
-    connectionTimeoutMillis: 15000, idleTimeoutMillis: 10000,
+    // Reuse TLS/database connections between menu visits; authorization still runs per request.
+    connectionTimeoutMillis: 15000, idleTimeoutMillis: 60000,
   });
   pool.on('error', () => console.error('Koneksi database terputus.'));
 
