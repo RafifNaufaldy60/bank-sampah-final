@@ -19,6 +19,7 @@ import { createApprovalRoutes } from './approvals'
 import { createHistoryRoutes } from './history'
 import RiwayatNasabahPage from '../pages/pengelola/RiwayatNasabahPage'
 import KelolaJadwalPage from '../pages/pengelola/KelolaJadwalPage'
+import CatatanSetoranPage from '../pages/pengelola/CatatanSetoranPage'
 import { createScheduleRoutes } from './schedules'
 
 export function createAppRoutes(store) {
@@ -36,6 +37,7 @@ export function createAppRoutes(store) {
         { index: true, element: <Navigate to="ringkasan" replace /> },
         { path: 'ringkasan', loader: loaders.summary, element: <RingkasanPage />, errorElement: <RouteError /> },
         { path: 'riwayat-nasabah', loader: history.loader, element: <RiwayatNasabahPage />, errorElement: <RouteError /> },
+        { path: 'catatan-setoran', loader: loaders.manager, element: <CatatanSetoranPage />, errorElement: <RouteError /> },
         ...['kelola-jadwal', 'kelola-jadwal/tambah', 'kelola-jadwal/:id/edit'].map((path, index) => ({
           path, loader: schedules.loader, action: schedules.action, element: <KelolaJadwalPage form={index > 0} />, errorElement: <RouteError />,
         })),
