@@ -1,0 +1,422 @@
+
+.info-price-page {
+  min-height: 100vh;
+  background: #fcfcfa;
+  color: #2f3b34;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* HERO */
+.info-price-hero {
+  background: #f5f2e9;
+  min-height: 345px;
+  overflow: hidden;
+  position: relative;
+}
+
+.info-price-container {
+  width: min(1160px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.info-price-hero-inner {
+  min-height: 345px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 35px;
+}
+
+.info-price-hero-text {
+  padding: 35px 0;
+}
+
+.info-price-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  border-radius: 30px;
+  background: #fff;
+  color: #546a5d;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.info-price-hero-text h1 {
+  margin: 25px 0 15px;
+  color: #2f3b34;
+  font: 700 42px/1.16 'Poppins', sans-serif;
+  letter-spacing: -1.5px;
+}
+
+.info-price-hero-text p {
+  max-width: 480px;
+  margin: 0;
+  color: #546a5d;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.info-price-hero-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 320px;
+}
+
+.info-price-hero-image img {
+  width: 100%;
+  max-width: 390px;
+  height: 300px;
+  object-fit: contain;
+}
+
+/* DAFTAR HARGA */
+.info-price-content {
+  padding: 0 0 20px;
+  background: #fcfcfa;
+}
+
+.info-price-search {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  margin: -24px auto 18px;
+  padding: 7px 9px 7px 18px;
+  border: 1px solid #dae1d8;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(47, 59, 52, 0.08);
+}
+
+.search-icon {
+  color: #698474;
+  font-size: 22px;
+}
+
+.info-price-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #2f3b34;
+  font: 14px 'Open Sans', sans-serif;
+}
+
+.info-price-search input::placeholder {
+  color: #889e81;
+}
+
+.info-price-search button {
+  padding: 10px 17px;
+  border: none;
+  border-radius: 9px;
+  background: #e9eee5;
+  color: #3f4f46;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.info-price-search button:hover {
+  background: #dae1d8;
+}
+
+.info-price-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.info-price-categories button {
+  padding: 8px 15px;
+  border: 1px solid #dae1d8;
+  border-radius: 8px;
+  background: #fff;
+  color: #3f4f46;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.info-price-categories button:hover,
+.info-price-categories button.active {
+  border-color: #4f6357;
+  background: #4f6357;
+  color: #fff;
+}
+
+/* KARTU HARGA */
+.info-price-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.info-price-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 82px;
+  padding: 11px;
+  border: 1px solid #e1e6df;
+  border-radius: 14px;
+  background: #fff;
+  transition: 0.2s ease;
+}
+
+.info-price-card:hover {
+  border-color: #b9c9b8;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(47, 59, 52, 0.06);
+}
+
+.info-price-card-image {
+  display: flex;
+  flex: 0 0 54px;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  background: #e8eee6;
+}
+
+.info-price-card-image img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.info-price-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.info-price-card-category {
+  display: block;
+  margin-bottom: 3px;
+  color: #889e81;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.info-price-card-info h3 {
+  margin: 0;
+  color: #3f4f46;
+  font: 600 13px 'Poppins', sans-serif;
+}
+
+.info-price-card-info p {
+  margin: 4px 0 0;
+  color: #829084;
+  font-size: 10px;
+}
+
+.info-price-card-value {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.info-price-card-value strong {
+  display: block;
+  color: #3f4f46;
+  font: 700 13px 'Poppins', sans-serif;
+  white-space: nowrap;
+}
+
+.info-price-card-value small {
+  display: block;
+  margin-top: 3px;
+  color: #889e81;
+  font-size: 10px;
+}
+
+.info-price-empty {
+  grid-column: 1 / -1;
+  padding: 35px;
+  border: 1px solid #dae1d8;
+  border-radius: 14px;
+  background: #fff;
+  text-align: center;
+}
+
+.info-price-empty h3 {
+  margin: 0 0 8px;
+}
+
+.info-price-empty p {
+  margin: 0;
+  color: #889e81;
+  font-size: 13px;
+}
+
+/* INFORMASI HARGA */
+.info-price-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  background: #e9eee5;
+  color: #546a5d;
+  font-size: 12px;
+}
+
+.info-price-notice span {
+  font-size: 17px;
+}
+
+/* PANDUAN SETORAN */
+.info-price-guide {
+  padding: 55px 0 65px;
+  background: #174d3e;
+  color: #fff;
+}
+
+.info-price-guide-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 35px;
+  margin-bottom: 28px;
+}
+
+.info-price-guide-heading span {
+  color: #d5dfc5;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+}
+
+.info-price-guide-heading h2 {
+  margin: 10px 0 0;
+  color: #f5f2d9;
+  font: 700 29px 'Poppins', sans-serif;
+}
+
+.info-price-guide-heading > p {
+  max-width: 370px;
+  margin: 0 0 5px;
+  color: #dce7df;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.info-price-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.info-price-step {
+  min-height: 125px;
+  padding: 19px;
+  border-radius: 13px;
+  background: #fff;
+  color: #3f4f46;
+}
+
+.info-price-step > strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #698474;
+  font: 700 24px 'Poppins', sans-serif;
+}
+
+.info-price-step h3 {
+  margin: 0 0 8px;
+  color: #3f4f46;
+  font: 600 14px 'Poppins', sans-serif;
+}
+
+.info-price-step p {
+  margin: 0;
+  color: #68766b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .info-price-hero-inner {
+    grid-template-columns: 1fr 0.8fr;
+    gap: 10px;
+  }
+
+  .info-price-hero-text h1 {
+    font-size: 34px;
+  }
+
+  .info-price-card {
+    flex-wrap: wrap;
+  }
+
+  .info-price-card-value {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 650px) {
+  .info-price-container {
+    width: calc(100% - 32px);
+  }
+
+  .info-price-hero-inner {
+    grid-template-columns: 1fr;
+    padding: 35px 0 20px;
+  }
+
+  .info-price-hero-text {
+    padding: 10px 0 0;
+  }
+
+  .info-price-hero-text h1 {
+    font-size: 32px;
+  }
+
+  .info-price-hero-image {
+    height: 210px;
+  }
+
+  .info-price-hero-image img {
+    height: 210px;
+  }
+
+  .info-price-search {
+    margin-top: -18px;
+  }
+
+  .info-price-search button {
+    padding: 9px 11px;
+  }
+
+  .info-price-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-price-guide-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .info-price-guide-heading h2 {
+    font-size: 24px;
+  }
+
+  .info-price-steps {
+    grid-template-columns: 1fr;
+  }
+}
