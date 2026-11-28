@@ -15,8 +15,8 @@ import youtube from '../assets/icons/YouTube.svg'
 import linkedin from '../assets/icons/LinkedIn.svg'
 
 export const headerNavigation = [
-  { label: 'Beranda', href: '#beranda', active: true },
-  { label: 'Info Harga', href: '#info-harga' },
+  { label: 'Beranda', href: '/' , active: true },
+  { label: 'Info Harga', href: '/info-harga' },
   { label: 'Jadwal Layanan', href: '#cara-kerja' },
   { label: 'Saldo & Riwayat', href: '/login' },
 ]

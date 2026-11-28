@@ -2,6 +2,7 @@ import { Link, Navigate } from 'react-router-dom'
 import RootLayout from '../layouts/RootLayout'
 import ProtectedRoute from '../components/ProtectedRoute'
 import GuestRoute from '../components/GuestRoute'
+import InfoHargaPage from '../pages/InfoHargaPage'
 import HomePage from '../pages/HomePage'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
@@ -30,6 +31,7 @@ export function createAppRoutes(store) {
     element: <RootLayout />, loader: loaders.bootstrap, HydrateFallback: InitialFallback, errorElement: <RouteError />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: 'info-harga', element: <InfoHargaPage /> },
       { element: <GuestRoute />, children: [{ path: 'login', element: <Login /> }, { path: 'register', element: <Register /> }] },
       { element: <ProtectedRoute />, children: [{ path: 'akun', element: <AccountHome /> }] },
       { path: 'pengelola', loader: loaders.manager, element: <PengelolaLayout />, errorElement: <RouteError />, children: [
