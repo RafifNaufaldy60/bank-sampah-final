@@ -79,5 +79,5 @@ export function createSessionLoaders(store) {
       args.request.signal.removeEventListener('abort', abort)
     }
   }
-  return { bootstrap, manager, summary, chair: args => manager(args, true) }
+  return { ensureSession, bootstrap, manager, summary, chair: args => manager(args, true) }
 }

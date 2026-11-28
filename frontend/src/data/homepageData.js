@@ -18,7 +18,7 @@ export const headerNavigation = [
   { label: 'Beranda', href: '/' , active: true },
   { label: 'Info Harga', href: '/info-harga' },
   { label: 'Jadwal Layanan', href: '/jadwal-layanan' },
-  { label: 'Saldo & Riwayat', href: '/login' },
+  { label: 'Saldo & Riwayat', href: '/akun/saldo-riwayat' },
 ]
 
 export const headerActions = [

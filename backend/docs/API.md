@@ -304,7 +304,7 @@ Response baru 201:
 
 Retry dengan kunci, pengelola, dan isi setara mengembalikan **200**, transaksi yang sama, `meta.replayed:true`. Urutan rincian dan penulisan berat `1` vs `1.000` tidak mengubah kesetaraan. Kunci sama dengan isi/pengelola berbeda → 409 `KUNCI_BERBEDA_ISI`. Kunci hanya diganti ketika pengguna memang membuat transaksi baru; tidak diganti akibat timeout. Kunci tidak kedaluwarsa selama transaksi tersimpan. Bila status hasil simpan belum diketahui, kirim ulang body dan kunci yang sama.
 
-`GET /setoran/1` tanpa body → 200 dengan object `data` persis bentuk rincian transaksi di atas, tanpa `meta.replayed`. Pengelola dapat membaca semua transaksi; nasabah hanya miliknya. ID milik pihak lain/tidak ada → 404. Total tersimpan tidak dihitung ulang memakai tarif terbaru. Sesudah simpan, refetch `/saldo`, `/setoran`, `/ringkasan`, serta pengajuan terkait sesuai peran.
+`GET /setoran/1` tanpa body → 200 dengan object `data` berbentuk rincian transaksi di atas, tanpa `meta.replayed`. Pengelola dapat membaca semua transaksi; nasabah hanya miliknya. ID milik pihak lain/tidak ada → 404. Total tersimpan tidak dihitung ulang memakai tarif terbaru. Sesudah simpan, refetch `/saldo`, `/setoran`, `/ringkasan`, serta pengajuan terkait sesuai peran.
 
 ## Saldo, riwayat, dan ekspor
 
@@ -335,6 +335,8 @@ Tanpa setoran, nilai saldo/berat adalah string `"0"`. Tidak menerima `nasabah_id
   "meta": { "page": 1, "limit": 20, "total": 1, "total_pages": 1, "dari": "2026-11-01", "sampai": "2026-11-18", "zona_waktu": "Asia/Jakarta" }
 }
 ```
+
+Contoh di atas adalah respons pengelola. Untuk nasabah, daftar dan rincian hanya mengirim kolom transaksi publik, tanpa `pengelola_id`, `nama_pengelola`, atau `pengajuan_penjemputan_id`. Rincian menambahkan `rincian[]` dengan harga saat transaksi dicatat. Halaman nasabah memakai `total_kg` sepanjang waktu dan periode awal `tiga_bulan`. Semua batas tanggal bersifat inklusif menurut Asia/Jakarta.
 
 Pengelola melihat semua nasabah. Nasabah memakai endpoint yang sama dengan pembatasan otomatis miliknya. Pencarian `search` berdasarkan nama nasabah, kode nasabah, atau kode transaksi. `%` dan `_` dalam teks pencarian diperlakukan sebagai karakter biasa. Pagination di luar halaman terakhir mengembalikan `data:[]` dan total sebenarnya.
 

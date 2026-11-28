@@ -336,6 +336,30 @@ test('Alur HTTP dan transaksi PostgreSQL pada schema terisolasi', { timeout: 600
     assert.equal(book.getWorksheet('Riwayat').getCell('D2').type, ExcelJS.ValueType.String);
     assert.equal(book.getWorksheet('Riwayat').getCell('A2').value, today);
   });
+  await t.test('Riwayat B pada batas awal tiga bulan dan saldo setelah refetch', async () => {
+    const start = dateRange({ periode: 'tiga_bulan' }, today).dari;
+    const beforeA = (await api('/saldo', { token: tokenA })).data;
+    const deposits = [];
+    for (const tanggal_setoran of [shiftDays(start, -1), start, today]) {
+      deposits.push((await save(depositBody([{ jenis_sampah_id: 3, berat_kg: '1' }], { nasabah_id: b.id, tanggal_setoran }))).data);
+    }
+    const latest = deposits[2];
+    for (const [page, expected] of [[1, latest], [2, deposits[1]]]) {
+      const result = await api(`/setoran?periode=tiga_bulan&page=${page}&limit=1`, { token: tokenB });
+      assert.equal(result.meta.total, 2);
+      assert.equal(result.data[0].setoran_id, expected.setoran_id);
+      assert.equal(result.data[0].nasabah_id, b.id);
+      assert.equal('pengelola_id' in result.data[0], false);
+    }
+    const detail = (await api(`/setoran/${latest.setoran_id}`, { token: tokenB })).data;
+    assert.equal(detail.nama_nasabah, b.nama);
+    assert.equal('pengajuan_penjemputan_id' in detail, false);
+    assert.equal((await api('/saldo', { token: tokenB })).data.total_kg, '3.000');
+    assert.deepEqual((await api('/saldo', { token: tokenA })).data, beforeA);
+    await api(`/setoran/${latest.setoran_id}`, { token: tokenA, expected: 404 });
+    await api('/setoran', { expected: 401 });
+    await api(`/setoran/${latest.setoran_id}`, { expected: 401 });
+  });
   await t.test('Logout mencabut token; sesi kedaluwarsa dan akun nonaktif ditolak', async () => {
     await api('/auth/logout', { method: 'POST', token: tokenB });
     await api('/auth/me', { token: tokenB, expected: 401 });

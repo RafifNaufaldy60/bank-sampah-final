@@ -3,8 +3,12 @@ import { ensure } from '../utils/errors.js';
 import { todayJakarta } from '../utils/dates.js';
 import { digest } from '../utils/security.js';
 
+// Public receipt fields shared by the customer list and detail.
+export const customerHistoryColumns = `r.setoran_id,r.kode_setoran,r.tanggal_setoran,r.dicatat_pada,
+  r.nasabah_id,r.kode_nasabah,r.nama_nasabah,r.jenis_sampah,r.berat_kg,r.nilai_setoran_rp,r.status`;
+
 export async function transactionDetail(client, id, ownerId = null) {
-  const row = (await client.query(`SELECT r.*,s.pengajuan_penjemputan_id FROM v_riwayat_setoran r
+  const row = (await client.query(`SELECT ${ownerId === null ? 'r.*,s.pengajuan_penjemputan_id' : customerHistoryColumns} FROM v_riwayat_setoran r
     JOIN setoran s ON s.id=r.setoran_id WHERE r.setoran_id=$1 AND ($2::bigint IS NULL OR r.nasabah_id=$2)`, [id, ownerId])).rows[0];
   ensure(row, 404, 'TIDAK_DITEMUKAN', 'Transaksi tidak ditemukan.');
   const rincian = (await client.query(`SELECT d.jenis_sampah_id,j.nama AS jenis_sampah,j.kategori,

@@ -26,6 +26,23 @@ function fillLogin() {
   fireEvent.change(screen.getByLabelText('Kata sandi'), { target: { value: 'Password-Test-123' } })
 }
 describe('authentication behavior', () => {
+  it.each(['/info-harga', '/jadwal-layanan'])('redirects guests from %s before fetching page data', async path => {
+    const get = vi.spyOn(api, 'get')
+    mount(path)
+    expect(await screen.findByLabelText('Email')).toBeVisible()
+    expect(get).not.toHaveBeenCalled()
+  })
+  it.each([['/info-harga', 'Info Harga'], ['/jadwal-layanan', 'Jadwal Layanan']])('shows customer navigation at %s', async (path, label) => {
+    savedSession()
+    vi.spyOn(api, 'get').mockImplementation(async url => url === '/auth/me'
+      ? response({ ...user, peran: 'nasabah', is_ketua: false })
+      : { data: { data: [], meta: { total_pages: 0 } } })
+    mount(path)
+    expect(await screen.findByText(user.nama)).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Logout' })).toBeVisible()
+    expect(screen.getAllByRole('link', { name: label }).some(link => link.getAttribute('aria-current') === 'page')).toBe(true)
+    expect(screen.queryByRole('link', { name: /^(Masuk|Daftar)$/i })).toBeNull()
+  })
   it('single bootstrap under StrictMode, real profile/role, guest redirect without loop', async () => {
     savedSession()
     const get = vi.spyOn(api, 'get').mockImplementation(async path => response(path === '/auth/me' ? user : summaryFixture))
