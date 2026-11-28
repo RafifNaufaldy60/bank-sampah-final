@@ -11,3 +11,6 @@ export const weight = value => `${decimalID(value)} kg`
 export const initials = name => name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase()
 export const dateID = date => new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T00:00:00+07:00`))
 export const timeID = time => time.slice(0, 5).replace(':', '.')
+
+const dayFormat = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' })
+export const depositDate = value => dayFormat.format(new Date(value + 'T00:00:00+07:00'))

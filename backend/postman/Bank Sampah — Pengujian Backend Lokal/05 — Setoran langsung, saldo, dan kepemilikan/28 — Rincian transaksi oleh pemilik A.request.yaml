@@ -1,6 +1,6 @@
 $kind: http-request
 description: |-
-  Hasil yang diharapkan: HTTP 200. Seluruh jenis, berat, tarif tersimpan, subtotal, total, status dan pengelola tersedia.
+  Hasil yang diharapkan: HTTP 200. Seluruh jenis, berat, tarif tersimpan, subtotal, total, status tersedia.
 
   Autentikasi: token_nasabah. Prasyarat variabel: token_nasabah, transaksi_id, body_setoran, nilai_setoran.
 url: "{{base_url}}/setoran/{{transaksi_id}}"
@@ -35,9 +35,9 @@ scripts:
       function gram(value) { const [a, b = ''] = String(value).split('.'); return BigInt(a) * 1000n + BigInt(b.padEnd(3, '0')); }
       pm.test('Identitas dan perhitungan transaksi benar', () => {
         const sent = JSON.parse(pm.environment.get('body_setoran'));
-        pm.expect(data.nasabah_id).to.eql(pm.environment.get('nasabah_id')); pm.expect(data.pengelola_id).to.eql(pm.environment.get('pengelola_id'));
+        pm.expect(data.nasabah_id).to.eql(pm.environment.get('nasabah_id')); pm.expect(data).not.to.have.property('pengelola_id');
         pm.expect(data.tanggal_setoran).to.eql(sent.tanggal_setoran); pm.expect(data.status).to.eql('Terverifikasi');
-        pm.expect(data.pengajuan_penjemputan_id).to.eql(null);
+        pm.expect(data).not.to.have.property('pengajuan_penjemputan_id');
         pm.expect(data.rincian.length).to.eql(sent.rincian.length); let total = 0n; let totalGram = 0n;
         for (const item of sent.rincian) {
           const line = data.rincian.find(row => String(row.jenis_sampah_id) === String(item.jenis_sampah_id));

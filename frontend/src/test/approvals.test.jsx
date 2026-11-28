@@ -59,7 +59,7 @@ describe('Kelola Akun Pengelola', () => {
   it('loads the list while refreshing permission, but waits for authorization before rendering', async () => {
     const profile = deferred(); let refreshing = false
     const { router, get } = mount({ path: '/pengelola/catatan-setoran', getHandler: async url => refreshing && url === '/auth/me' ? await profile.promise : undefined })
-    await screen.findByText('Halaman ini sedang dalam pengembangan.')
+    await screen.findByRole('heading', { name: 'Catatan Setoran', level: 1 })
     refreshing = true
     let navigation
     act(() => { navigation = router.navigate('/pengelola/persetujuan-akun') })
@@ -94,7 +94,7 @@ describe('Kelola Akun Pengelola', () => {
   })
   it('refreshes backend permission when entering from an initialized session', async () => {
     const { state, router } = mount({ path: '/pengelola/catatan-setoran' })
-    await screen.findByText('Halaman ini sedang dalam pengembangan.')
+    await screen.findByRole('heading', { name: 'Catatan Setoran', level: 1 })
     state.user = { ...manager, is_ketua: false }
     await act(async () => { await router.navigate('/pengelola/persetujuan-akun') })
     await screen.findByRole('heading', { name: /403/ })

@@ -1,7 +1,7 @@
 import ExcelJS from 'exceljs';
 import * as v from '../utils/validation.js';
 import { dateRange, todayJakarta } from '../utils/dates.js';
-import { saveDeposit, transactionDetail } from '../services/deposit-service.js';
+import { customerHistoryColumns, saveDeposit, transactionDetail } from '../services/deposit-service.js';
 
 function historyFilter(req) {
   v.fields(req.query, ['search', 'dari', 'sampai', 'periode', 'page', 'limit']);
@@ -23,6 +23,7 @@ export function depositController(db) {
       res.status(replayed ? 200 : 201).json({ data, meta: { replayed } });
     },
     detail: async (req, res) => {
+      v.fields(req.query, []);
       const id = v.id(req.params.id);
       const data = await db.transaction(client => transactionDetail(client, id, req.nasabahScope), { readOnly: true, repeatableRead: true });
       res.json({ data });
@@ -32,7 +33,7 @@ export function depositController(db) {
       const { page, limit, offset } = v.pagination(req.query);
       const result = await db.transaction(async client => {
         const count = (await client.query(`SELECT count(*) FROM v_riwayat_setoran r WHERE ${filter.where}`, filter.params)).rows[0].count;
-        const rows = (await client.query(`SELECT r.* FROM v_riwayat_setoran r WHERE ${filter.where}
+        const rows = (await client.query(`SELECT ${req.nasabahScope === null ? 'r.*' : customerHistoryColumns} FROM v_riwayat_setoran r WHERE ${filter.where}
           ORDER BY r.tanggal_setoran DESC,r.setoran_id DESC LIMIT $5 OFFSET $6`, [...filter.params, limit, offset])).rows;
         return { data: rows, meta: { ...v.pageMeta(count, page, limit), ...filter.range, zona_waktu: 'Asia/Jakarta' } };
       }, { readOnly: true, repeatableRead: true });

@@ -21,7 +21,12 @@ import { createApprovalRoutes } from './approvals'
 import { createHistoryRoutes } from './history'
 import RiwayatNasabahPage from '../pages/pengelola/RiwayatNasabahPage'
 import KelolaJadwalPage from '../pages/pengelola/KelolaJadwalPage'
+import CatatanSetoranPage from '../pages/pengelola/CatatanSetoranPage'
 import { createScheduleRoutes } from './schedules'
+
+import AccountLayout from '../layouts/AccountLayout'
+import BalancePage from '../pages/BalancePage'
+import { balanceLoader } from './balance'
 
 export function createAppRoutes(store) {
   const loaders = createSessionLoaders(store)
@@ -32,14 +37,18 @@ export function createAppRoutes(store) {
     element: <RootLayout />, loader: loaders.bootstrap, HydrateFallback: InitialFallback, errorElement: <RouteError />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'info-harga', element: <InfoHargaPage /> },
-      { path: 'jadwal-layanan', element: <JadwalLayananPage /> },
       { element: <GuestRoute />, children: [{ path: 'login', element: <Login /> }, { path: 'register', element: <Register /> }] },
-      { element: <ProtectedRoute />, children: [{ path: 'akun', element: <AccountHome /> }] },
+      { element: <ProtectedRoute />, children: [{ element: <AccountLayout />, children: [
+        { path: 'info-harga', element: <InfoHargaPage /> },
+        { path: 'jadwal-layanan', element: <JadwalLayananPage /> },
+        { path: 'akun', element: <AccountHome /> },
+        { path: 'akun/saldo-riwayat', loader: balanceLoader(store, loaders), element: <BalancePage />, errorElement: <RouteError /> },
+      ] }] },
       { path: 'pengelola', loader: loaders.manager, element: <PengelolaLayout />, errorElement: <RouteError />, children: [
         { index: true, element: <Navigate to="ringkasan" replace /> },
         { path: 'ringkasan', loader: loaders.summary, element: <RingkasanPage />, errorElement: <RouteError /> },
         { path: 'riwayat-nasabah', loader: history.loader, element: <RiwayatNasabahPage />, errorElement: <RouteError /> },
+        { path: 'catatan-setoran', loader: loaders.manager, element: <CatatanSetoranPage />, errorElement: <RouteError /> },
         ...['kelola-jadwal', 'kelola-jadwal/tambah', 'kelola-jadwal/:id/edit'].map((path, index) => ({
           path, loader: schedules.loader, action: schedules.action, element: <KelolaJadwalPage form={index > 0} />, errorElement: <RouteError />,
         })),
