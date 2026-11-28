@@ -64,7 +64,11 @@
 .auth-dialog p { margin: 0 0 5px; font: 400 16px/normal Inter, sans-serif; }
 .dialog-close { position: absolute; right: 14px; top: 12px; width: 32px; height: 32px; background: transparent; border: 0; font-size: 24px; color: #4f6357; cursor: pointer; }
 .dialog-login { position: absolute; bottom: 20px; left: 24px; right: 24px; border: 0; background: transparent; color: #4f6357; text-decoration: underline; margin: 0; cursor: pointer; }
-.session-screen, .account-home { margin: 100px auto; padding: 32px; max-width: 480px; }
+.session-screen {
+  margin: 100px auto;
+  padding: 32px;
+  max-width: 480px;
+}
 @media (min-width: 1600px) { .auth-main { max-width: 900px; } }
 @media (max-width: 1250px) {
   .auth-story-content { padding: 40px 28px; }
